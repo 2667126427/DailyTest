@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    char ch;
+    scanf("%c", &ch);
+
+    if (ch >= '0' && ch <= '9')
+    {
+        ch = ch - '0';
+    }
+    else if (ch >= 'a' && ch <= 'f')
+    {
+        ch = ch - 'a';
+    }
+    else if (ch >= 'A' && ch <= 'F')
+    {
+        ch = ch - 'A';
+    }
+
+    printf("%d\n", (int)ch);
+
+    return 0;
+}
