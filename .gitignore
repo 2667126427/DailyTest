@@ -254,6 +254,14 @@ paket-files/
 *.sln.iml
 
 # CodeRush
+
+#CodeBlocks
+*.layout
+*.exe
+*.cbp
+*.o
+*.depend
+
 .cr/
 
 # Python Tools for Visual Studio (PTVS)
