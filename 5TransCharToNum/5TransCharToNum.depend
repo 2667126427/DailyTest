@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1490534967 source:d:\github\dailytest\5transchartonum\main.c
+	<stdio.h>
+	<stdlib.h>
+

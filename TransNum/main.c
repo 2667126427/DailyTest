@@ -12,11 +12,11 @@ int main()
     }
     else if (ch >= 'a' && ch <= 'f')
     {
-        ch = ch - 'a';
+        ch = ch - 'a' + 10;
     }
     else if (ch >= 'A' && ch <= 'F')
     {
-        ch = ch - 'A';
+        ch = ch - 'A' + 10;
     }
 
     printf("%d\n", (int)ch);
