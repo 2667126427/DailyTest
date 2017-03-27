@@ -60,16 +60,18 @@ int DayOfYear(int year, int month, int day)
 
 int main()
 {
+    int N = 0;
     int year = 0;
     int month = 0;
     int day = 0;
 
-    while (scanf("%d %d %d", &year, &month, &day) != EOF)
+    scanf("%d", &N);
+
+    for (int i = 0; i < N; ++i)
     {
-        printf("该日期是这一年中的第%d天\n", DayOfYear(year, month, day));
+        scanf("%d %d %d", &year, &month, &day);
+        printf("%d\n", DayOfYear(year, month, day));
     }
-
-
 
     return 0;
 }
