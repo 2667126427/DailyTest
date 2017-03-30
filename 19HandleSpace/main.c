@@ -28,7 +28,8 @@ int main()
     // nonsense how long the string will be;
     char test[1000];
     scanf("%d", &N);
-    getchar(); // first time I don't add this code and there is an error;
+    // first time I don't add this code and there is an error;
+    getchar();
 
     for (int i = 0; i < N; ++i)
     {
