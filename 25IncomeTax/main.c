@@ -15,7 +15,7 @@ double Tax(double salary)
 
     #if SWITCH
     {
-        switch ((int)salary % 1000)
+        switch ((int)salary / 1000)
         {
         default:
             tax += (salary - 5000) * RATE5;
