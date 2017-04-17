@@ -1,6 +1,5 @@
 #include <stdio.h>
 #define CHANGE(c) ((c) % 2)
-
 char* Upside(const char* str){
     static char _str[1000];
     int i = 0;
@@ -19,7 +18,6 @@ char* Upside(const char* str){
     _str[i] = '\0';
     return _str;
 }
-
 void Print(const char* str){
     if (CHANGE(str[0]) == 0){
         printf("%s\n", str);
@@ -28,7 +26,6 @@ void Print(const char* str){
         printf("%s\n", Upside(str));
     }
 }
-
 int main() {
     char str[1000];
     while (scanf("%[^\n]", str) != EOF){
