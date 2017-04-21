@@ -24,7 +24,7 @@ void Print(char* str){
 int main(void){
     char str[100];
     printf("Input a string:\n");
-    scanf("%[^%\n]", str);
+    scanf("%[^\n]", str);
     Print(str);
     return 0;
 }

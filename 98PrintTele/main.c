@@ -20,16 +20,19 @@ char* Upside(const char* str){
 }
 void Print(const char* str){
     if (CHANGE(str[0]) == 0){
-        printf("%s\n", str);
+        printf("%s", str);
     }
     else {
-        printf("%s\n", Upside(str));
+        printf("%s", Upside(str));
     }
 }
 int main() {
     char str[1000];
-    while (scanf("%[^\n]", str) != EOF){
-        getchar();
+    int N = 0;
+    scanf("%d", &N);
+    getchar();
+    for (int i = 0; i < N; ++i){
+        fgets(str, 1000, stdin);
         Print(str);
     }
     return 0;
