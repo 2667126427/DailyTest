@@ -10,10 +10,7 @@ void Print(const int N) {
 		chs[count--] = temp % 2 + '0';
 		temp /= 2;
 	}
-	for (int i = 0; i < sizeof(int) * 8; i++) {
-		printf("%c", chs[i]);
-	}
-	printf("\n");
+	printf("%s\n", chs);
 }
 
 int main(void) {
@@ -29,3 +26,7 @@ int main(void) {
 	free(target);
 	return 0;
 }
+/*
+8
+1 1024 26 0 -1 65 4 -1024
+*/
