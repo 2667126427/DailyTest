@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX 8 // ÉèÖÃ»Êºó×ÜÊı
+#define MAX 8 // è®¾ç½®çš‡åæ€»æ•°
 #define true 1
 #define false 0
 FILE* file = NULL;
 // typedef int bool;
-int count = 0; // È«¾Ö¼ÇÂ¼×ÜÊı
-			   // ¼ì²â¸ÃÉî¶ÈÊ±ÊÇ·ñÂú×ã
+int count = 0; // å…¨å±€è®°å½•æ€»æ•°
+			   // æ£€æµ‹è¯¥æ·±åº¦æ—¶æ˜¯å¦æ»¡è¶³
 bool Check(int* arr, int depth) {
-	int val_dif = 0; // ×óÓÒ²î
-	int ind_dif = 0; // ÉÏÏÂ²î
+	int val_dif = 0; // å·¦å³å·®
+	int ind_dif = 0; // ä¸Šä¸‹å·®
 	for (int i = 1; i <= depth; ++i) {
 		for (int j = i + 1; j <= depth; j++) {
 			val_dif = arr[i] - arr[j];
@@ -24,7 +24,7 @@ bool Check(int* arr, int depth) {
 void DFS(int *arr, const int now) {
 	for (int i = 1; i <= MAX; i++) {
 		arr[now] = i;
-		if (Check(arr, now)) {// Èç¹ûÒÑ¾­ÊÇµÚ°Ë¸ö²¢ÇÒÂú×ãÌõ¼ş£¬´òÓ¡
+		if (Check(arr, now)) {// å¦‚æœå·²ç»æ˜¯ç¬¬å…«ä¸ªå¹¶ä¸”æ»¡è¶³æ¡ä»¶ï¼Œæ‰“å°
 			if (now == MAX) {
 				printf("%d", arr[1]);
 				fprintf(file, "%d", arr[1]);
@@ -32,11 +32,11 @@ void DFS(int *arr, const int now) {
 					printf(" %d", arr[i]);
 					fprintf(file, " %d", arr[i]);
 				}
-				printf("\n");
+				printf("\n"); 
 				fprintf(file, "\n");
 				++count;
-				continue; // ²»ĞèÒªµ½ÏÂÒ»²ã¼ÌĞøÕÒÁË
-			}// Î´µ½µÚ°Ë²ãÇÒÇ°ÃæµÄ¼¸²ã¿ÉÒÔÂú×ãÌõ¼ş
+				continue; // ä¸éœ€è¦åˆ°ä¸‹ä¸€å±‚ç»§ç»­æ‰¾äº†
+			}// æœªåˆ°ç¬¬å…«å±‚ä¸”å‰é¢çš„å‡ å±‚å¯ä»¥æ»¡è¶³æ¡ä»¶
 			DFS(arr, now + 1);
 		}
 	}
@@ -44,14 +44,14 @@ void DFS(int *arr, const int now) {
 int main(void) {
 	file = fopen("result.txt", "w");
 	if (file == NULL) {
-		printf("´ò¿ªÎÄ¼şÊ§°Ü£¡\n");
+		printf("æ‰“å¼€æ–‡ä»¶å¤±è´¥ï¼\n");
 		exit(0);
 	}
-	fprintf(file, "±¾ÎÄ¼şÊäÈëÒâË¼ÎªÒ»ĞĞ¾ÍÊÇÒ»¸ö½â£¬ÓÉ´ÓµÚÒ»¸ö»Êºóµ½µÚ8¸öÔÚÆäËùÔÚĞĞµÄÎ»ÖÃ×é³É¡£\n");
-	int a[MAX + 1] = { 0, }; // ¶¨Îª9Î¬£¬µÚÒ»Î¬²»ÒªÀ²£¬Ğ´×Å·½±ã
-	DFS(a, 1); // ´ÓµÚÒ»²ã¿ªÊ¼ÕÒ
-	printf("Ò»¹²%dÖÖÇé¿ö¡£\n", count);
-	fprintf(file, "Ò»¹²%dÖÖÇé¿ö¡£\n", count);
+	fprintf(file, "æœ¬æ–‡ä»¶è¾“å…¥æ„æ€ä¸ºä¸€è¡Œå°±æ˜¯ä¸€ä¸ªè§£ï¼Œç”±ä»ç¬¬ä¸€ä¸ªçš‡ååˆ°ç¬¬8ä¸ªåœ¨å…¶æ‰€åœ¨è¡Œçš„ä½ç½®ç»„æˆã€‚\n");
+	int a[MAX + 1] = { 0, }; // å®šä¸º9ç»´ï¼Œç¬¬ä¸€ç»´ä¸è¦å•¦ï¼Œå†™ç€æ–¹ä¾¿
+	DFS(a, 1); // ä»ç¬¬ä¸€å±‚å¼€å§‹æ‰¾
+	printf("ä¸€å…±%dç§æƒ…å†µã€‚\n", count);
+	fprintf(file, "ä¸€å…±%dç§æƒ…å†µã€‚\n", count);
 	fclose(file);
 	return 0;
 }
