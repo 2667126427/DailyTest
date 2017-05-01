@@ -13,6 +13,17 @@ void Print(const int N) {
 	printf("%s\n", chs);
 }
 
+void print(int num){
+	char chars[200];
+	while(num > 0){
+		num /= 2;
+		chars[num] = '0';
+	}
+
+	printf("%s\n", chars);
+	
+}
+
 int main(void) {
 	int N = 0; 
 	scanf("%d", &N);
@@ -27,6 +38,10 @@ int main(void) {
 	return 0;
 }
 /*
+ *author Yaning Wang
+ *
+ *Date 20170430
+ *
 8
 1 1024 26 0 -1 65 4 -1024
 */
