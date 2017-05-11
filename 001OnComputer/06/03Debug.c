@@ -18,5 +18,6 @@ char* strcpy(char * s, char * t){
     while(*s++ = *t++)
     ;
     return(str);
+    return s;
 }
 

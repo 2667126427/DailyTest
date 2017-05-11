@@ -13,10 +13,12 @@ void concen_space(char (*str)[81], int num){
     for (int i = 0; i < num; ++i){
         temp = 0;
         len = strlen(str[i]);
+        // 首先判断长度，0的话表示是空行，不用输出
         if (len == 0){
             continue;
         }
         for (temp = 0; temp < len; ++temp){
+            // if 判断是否满足输出的条件
             if ((str[i][temp] != ' ') || (str[i][temp] == ' ' && str[i][temp + 1] != ' ')){
                 printf("%c", str[i][temp]);
             }

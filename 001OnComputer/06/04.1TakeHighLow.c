@@ -6,14 +6,20 @@
  ************************************************************************/
 
 #include<stdio.h>
-#define H 0xffff0000
-#define L 0x0000ffff
+#define A 0xf0000000
+#define B 0x0f000000
+#define C 0x00f00000
+#define D 0x000f0000
+#define E 0x0000f000
+#define F 0x00000f00
+#define G 0x000000f0
+#define H 0x0000000f
 
-void ToChar(int N){
+void ToChar(unsigned int N){
     int i = 0;
-    const int count = 4 * sizeof(int) + 1;
+    const int count = 5;
     char str[count] = { 0, };
-    i = count - 2; // i 初始化为31或者15
+    i = count - 2; // 初始化i在正确地方
     while (i >= 0){
         str[i] = N % 2 + '0';
         N /= 2;
@@ -24,10 +30,17 @@ void ToChar(int N){
 
 int main(void){
     // printf("%lu\n", sizeof(int));
-    int t = 0;
+    unsigned int t = 0;
     printf("Please enter an integer:");
-    scanf("%d", &t);
-    ToChar(((unsigned int)(t & H))>>16);//无符号不会牵涉0
-    ToChar( (unsigned int)(t & L));
+    scanf("%ud", &t);
+    ToChar((t&A)>>28);
+    ToChar((t&B)>>24);
+    ToChar((t&C)>>20);
+    ToChar((t&D)>>16);
+    ToChar((t&E)>>12);
+    ToChar((t&F)>>8);
+    ToChar((t&G)>>4);
+    ToChar((t&H)>>0);
+
     return 0;
 }
