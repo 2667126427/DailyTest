@@ -26,7 +26,6 @@ void concen_space(char (*str)[81], int num){
         printf("\n");
     }
 }
-
 int main(void){
 	int N; // n行
 	printf("请输入行数：");
