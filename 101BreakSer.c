@@ -43,7 +43,7 @@ void SetBit(ISR_BITS* res, unsigned short tar){
 }
 
 void Print(const ISR_BITS* tar, void (*p_isr[8])(void)){
-    printf("%d\n", tar->rsv);
+    printf("%d:\n", tar->rsv);
     if (tar->bit0)p_isr[0]();
     if (tar->bit1)p_isr[1]();
     if (tar->bit2)p_isr[2]();
