@@ -18,7 +18,7 @@ typedef struct Stu{
     float c_lang;
     float sum;
     float ave;
-    Stu* next;
+    struct Stu* next;
 }Stu;
 typedef Stu* pStu;
 
@@ -77,6 +77,8 @@ void Change(pStu head, const int sum){
                     temp->c_lang = score;
                     break;
                 }
+                temp->sum = temp->e_lang + temp->math + temp->phy + temp->c_lang;
+                temp->ave = temp->sum / 4;
                 break;
             }
             temp = temp->next;
@@ -86,38 +88,71 @@ void Change(pStu head, const int sum){
 void PrintAveSum(const pStu head){
     pStu temp = head;
     printf("SumAndAvg:\n");
-    printf("%-15s%-20s%-15s%-15s\n", "ID", ":Nmae", "SUM", "AVG");
+    printf("%-15s%-20s%-10s%-10s\n", "ID", "Name", "SUM", "AVG");
     while (temp){
-        printf("%-15s%-20s%-15.2f%-15.2f\n", temp->no, temp->name,
+        printf("%-15s%-20s%-10.2f%-10.2f\n", temp->no, temp->name,
               temp->sum, temp->ave);
+        temp = temp->next;
     }
     printf("\n");
 }
 
+void Swap(pStu s1, pStu s2){
+    Stu t = *s1;
+    *s1 = *s2;
+    *s2 = t;
+    t.next = s1->next;
+    s1->next = s2->next;
+    s2->next = t.next;
+}
+
+int ave_comp(pStu s1, pStu s2){
+    return s1->ave < s2->ave;
+}
+
 void Sort(pStu head, int(*comp)(pStu s1, pStu s2)){
-    pStu max = head;
-    pStu stui = NULL;
+    pStu min = NULL;
+    pStu stui = head;
     pStu stuj = NULL;
     while (stui){
-        max = stui;
+        min = stui;
         stuj = stui->next;
         while (stuj){
-            
+            if (comp(stuj, min)){
+                min = stuj;
+            } 
             stuj = stuj->next;
         }
-
+        if (stui != min){
+            Swap(stui, min);
+        }
         stui = stui->next;
     }
 }
-
+void PrintAve(const pStu head){
+    printf("%s\n", "Sort:");
+    printf("%-15s%-20s%-10s\n", "ID", "Name", "AVG");
+    pStu temp = head;
+    while (temp){
+        printf("%-15s%-20s%-10.2f\n", temp->no, temp->name, temp->ave);
+        temp = temp->next;
+    }
+    printf("\n");
+}
 int main(void){
     int sum_stu = 0;
     scanf("%d", &sum_stu);
     pStu head = NULL;
     Input(&head, sum_stu);
     OutputAll(head); 
+    int change = 0;
+    scanf("%d", &change);
+    Change(head, change);
     printf("Alter:\n");
-    OutputAll(head);
+    OutputAll(head); 
+    PrintAveSum(head);
+    Sort(head, ave_comp);
+    PrintAve(head);
 
     return 0;
 }
