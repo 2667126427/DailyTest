@@ -11,28 +11,42 @@
 typedef struct Stu{
     char no[11];
     char name[10];
-    int e_lang;
-    int math;
-    int phy;
-    int c_lang;
-    int sum;
-    double ave;
+    float e_lang;
+    float math;
+    float phy;
+    float c_lang;
+    float sum;
+    float ave;
     Stu *next;
 }Stu;
 typedef Stu* pStu;
 char Select(void);
 pStu CreateNode();
+void Create(pStu*head);
 void OutInfo(const pStu head);
+void Change(pStu head);
 void OutAll(const pStu head);
 int main(void){
     pStu head = NULL;
-    int flag = '1';
-    while (flag != '0'){
+    int flag = 1;
+    while (flag != 0){
         switch (Select()){
-            case ('0'):
+        case ('0'):
+            flag = 0;
             break;
-            case ('1'):
-            default:
+        case ('1'):
+            Create(&head);
+            break;
+        case ('2'):
+            OutInfo(head);
+            break;
+        case ('3'):
+            Change(head);
+            break;
+        case ('4'):
+            OutAll(head);
+            break;
+        default:
             printf("请重新输入：\n");
         }
     }
@@ -61,14 +75,14 @@ pStu CreateNode(){
     getchar();
     printf("输入姓名：");
     scanf("%s", temp->name);
-    printf("输入英语成绩：");
-    scanf("%d", &temp->e_lang);
-    printf("输入数学成绩：");
-    scanf("%d", &temp->math);
-    printf("输入物理成绩：");
-    scanf("%d", &temp->phy);
-    printf("输入C语言成绩：");
-    scanf("%d", &temp->c_lang);
+    printf("输入%s的英语成绩：", temp->name);
+    scanf("%f", &temp->e_lang);
+    printf("输入%s的数学成绩：", temp->name);
+    scanf("%f", &temp->math);
+    printf("输入%s的物理成绩：", temp->name);
+    scanf("%f", &temp->phy);
+    printf("输入%s的C语言成绩：", temp->name);
+    scanf("%f", &temp->c_lang);
     temp->sum = temp->e_lang + temp->math + temp->phy + temp->c_lang;
     temp->ave = temp->sum * 0.25;
     temp->next = NULL;
@@ -83,8 +97,9 @@ void Create(pStu* head){
         scanf("%d", &flag);
         if (null && flag){
             *head = temp = CreateNode();
+            null = 0;
         }
-        else if (flag && !null){
+        else if (!null && flag){
             temp =  temp->next = CreateNode();
         }
     }
@@ -92,7 +107,7 @@ void Create(pStu* head){
 void OutInfo(const pStu head){
     pStu temp = head;
     while (temp){
-        printf("学号：%s\t姓名：%s\t英语：%d\t数学：%d\t物理：%d\tC语言：%d\n", temp->no, temp->name,
+        printf("学号：%s\t姓名：%s\t英语：%.2f\t数学：%.2f\t物理：%.2f\tC语言：%.2f\n", temp->no, temp->name,
                temp->e_lang, temp->math, temp->phy, temp->c_lang);
         temp = temp->next;
     }
@@ -100,8 +115,47 @@ void OutInfo(const pStu head){
 void OutAll(const pStu head){
     pStu temp = head;
     while (temp){
-        printf("学号：%s\t姓名：%s\t英语：%d\t数学：%d\t物理：%d\tC语言：%d\t%d\t%.2f\n", temp->no, temp->name,
+        printf("学号：%s\t姓名：%s\t英语：%.2f\t数学：%.2f\t物理：%.2f\tC语言：%.2f\t总分：%.2f\t平均分：%.2f\n", temp->no, temp->name,
                temp->e_lang, temp->math, temp->phy, temp->c_lang, temp->sum, temp->ave);
         temp = temp->next;
     }
 }
+void Change(const pStu head){
+    pStu temp = head;
+    printf("请输入学号：");
+    char num[20];
+    scanf("%s", num);
+    while(temp){
+        if (strcmp(temp->no, num) == 0){
+            printf("请输入要修改的科目：\n");
+            printf("1:英语;2：数学;3：物理;4：C语言\n");
+            int course;
+            scanf("%d", &course);
+            printf("修改为：");
+            float score = 0;
+            scanf("%f", &score);
+            switch(course){
+                case 1:
+                    temp->e_lang = score;
+                    break;
+                case 2:
+                    temp->math = score;
+                    break;
+                case 3:
+                    temp->phy = score;
+                    break;
+                case 4:
+                    temp->c_lang = score;
+                    break;
+                default:
+                    printf("输入不合理，修改失败");
+            }
+            temp->sum = temp->e_lang + temp->math + temp->phy + temp->c_lang;
+            temp->ave = temp->sum / 4;
+            return;
+        }
+        temp = temp->next;
+    }
+    printf("无此学生.\n");
+}
+
