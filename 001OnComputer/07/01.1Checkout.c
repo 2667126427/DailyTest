@@ -20,7 +20,7 @@ int main(void){
     // 前四个是对p指针直接操作
     printf("(++p)->x = %d\n", (++p)->x);
     p--;
-    p++, printf("p++, p-c = %c\n", p->c);
+    p++, printf("p++, p->c = %c\n", p->c);
     p--;
     *p++->t, printf("*p++->t, *p->t = %c\n", *p->t);
     p--;
