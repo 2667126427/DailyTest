@@ -11,17 +11,18 @@
 
 typedef struct Char{
     char ch;
-    Char* next;
+    struct Char* next;
 }Char;
 typedef Char* pChar;
 
+// 输入字符串，返回值为输入的字符个数，便于下一步开辟空间
 int Input(pChar* head){
     char ch = 0;
     int size = 0;
     int isFirst = 1;
     pChar temp = NULL;
     pChar last = NULL;
-    while ((ch = getchar()) != EOF){
+    while ((ch = getchar()) != '#'){
         ++size;
         temp = (pChar)malloc(sizeof(Char));
         temp->ch = ch;
@@ -37,15 +38,16 @@ int Input(pChar* head){
     return size;
 }
 
+// 链表输出
 void Output(const pChar head){
     pChar temp = head;
     while (temp){
         printf("%c", temp->ch);
         temp = temp->next;
     }
-    /*printf("\n");*/
 }
 
+// 输入到字符串数组中
 void MyCpy(char* str, const pChar head){
     pChar temp = head;
     while (temp){
@@ -59,10 +61,14 @@ void MyCpy(char* str, const pChar head){
 int main(void){
     pChar head = NULL;
     int size = 0;
+    // 输入并统计输入字符个数
     size = Input(&head);
+    // 链表输出
     Output(head);
-    printf("\n");
+    printf("\n\n");
+    // 开辟空间，+1是为了存储'\0'
     char*str = (char*)malloc((size + 1) * sizeof(char));
+    // copy
     MyCpy(str, head);
     printf("%s", str);
     printf("\n");
