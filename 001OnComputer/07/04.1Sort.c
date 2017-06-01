@@ -107,6 +107,11 @@ void Create(pStu* head){
     pStu temp = *head;
     int flag = 1;
     int null = (*head == NULL ? 1 : 0);
+    if (!null) {
+        while (temp->next) {
+            temp = temp->next;
+        }
+    }
     while (flag){
         printf("是否添加？0：否，非0：是\n");
         scanf("%d", &flag);
@@ -174,7 +179,7 @@ void Change(const pStu head){
     printf("无此学生.\n");
 }
 
-
+// 交换数据域
 void SwapData(pStu s1, pStu s2) {
     Stu t = *s1;
     *s1 = *s2;
@@ -184,7 +189,7 @@ void SwapData(pStu s1, pStu s2) {
     s2->next = tp;
 }
 
-
+// 使用选择排序
 void Sort_data(pStu*head) {
     pStu s1 = *head;
     pStu s2 = NULL;
@@ -207,7 +212,7 @@ void Sort_data(pStu*head) {
         s1 = s1->next;
     };
 }
-
+// 交换指针域
 void SwapPoint(pStu s1, pStu s2, pStu l1, pStu l2){
     pStu tp = s1->next;
     s1->next = s2->next;
@@ -217,42 +222,49 @@ void SwapPoint(pStu s1, pStu s2, pStu l1, pStu l2){
     l2->next = tp;
 }
 
+// 使用选择排序
 void Sort_point(pStu*head){
-    int first = 1;
-    pStu s1 = *head;
-    pStu s2 = NULL;
-    pStu pre1 = NULL;
-    pStu pre2 = NULL;
+    // 空结点返回
     if (*head == NULL) {
         return;
     }
-    pStu temp = (pStu)malloc(sizeof(Stu));
-    temp->next = *head;
-    
+    // 标记修改的是第一个结点的位置
+    int first = 1;
+    // 存储要交换的结点
+    pStu s1 = *head;
+    pStu s2 = NULL;
+    // pre1存放s1前结点
+    // pre2存放s2前结点
+    pStu pre1 = (pStu)malloc(sizeof(Stu));
+    pre1->next = *head;
+    pStu pre2 = NULL;
+    // 存放min前结点
+    pStu min_pre;
+    // 最小元素的结点
     pStu min = NULL;
     while (s1) {
-        min = s1;
-        pre2 = s1;
-        pre1 = temp;
-        pre2 = s1;
-        s2 = s1->next;
+        min = pre2 = s1;
+        s2 = pre2->next;
         while (s2) {
             if (s2->ave < min->ave) {
                 min = s2;
-                pre1 = pre2;
+                min_pre = pre2;
             }
             s2 = s2->next;
             pre2 = pre2->next;
         }
         if (s1 != min){
-            SwapPoint(pre1, temp, s1, min);
+            // 交换对应结点的指针
+            SwapPoint(pre1, min_pre, s1, min);
         }
         if (first){
-            *head = temp->next;
-            pre1 = s1;
+            // 修改的是第一个结点需要修改head指针的内容
+            *head = pre1->next;
             first = 0;
         }
+        // 向后移动
         s1 = s1->next;
-        temp = temp->next;
+        pre1 = pre1->next;
     }
+    free(pre1);
 }

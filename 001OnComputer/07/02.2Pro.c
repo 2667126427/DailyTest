@@ -27,26 +27,17 @@ int main(void){
     return 0;
 }
 void create_list(struct s_list**headp, int*p){
-    struct s_list*loc_head = NULL, *tail;
-    if (p[0] == 0){
-        ;
+    struct s_list*head = NULL, *tail; // 创建暂时的头
+    head = (struct s_list*)malloc(sizeof(struct s_list));
+    head->next = NULL; //后继无人， 赋值为空指针
+    head->data = *p++;
+    tail = head; // 尾指针存储head
+    while(*p){
+        // 现在就是在头上开新空间
+        head = (struct s_list*)malloc(sizeof(struct s_list));
+        head->data = *p++;
+        head->next = tail; // 指向原来的头
+        tail = head; // 保存头
     }
-    else{
-        loc_head = (struct s_list*)malloc(sizeof(struct s_list));
-        loc_head->next = NULL; //后继无人， 赋值为空指针
-        loc_head->data = *p++;
-        tail = loc_head; // 尾指针存储head
-        while(*p){
-            // 现在就是在头上开新空间
-            loc_head = (struct s_list*)malloc(sizeof(struct s_list));
-            loc_head->data = *p++;
-            loc_head->next = tail; // 指向原来的头
-            tail = loc_head; // 保存尾
-          /*  tail->next = (struct s_list*)malloc(sizeof(struct s_list));*/
-            /*tail = tail->next;*/
-            /*tail->data = *p++;*/ // 不需要指向null
-        }
-    }
-    // 不变
-    *headp = loc_head;
+    *headp = head;
 }
