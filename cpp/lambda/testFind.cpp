@@ -33,14 +33,5 @@ int main(void) {
     if (big != end(numbers)) {
         cout << "big " << *big << endl;
     }
-    /*cout << "In smaller than 100:";*/
-    //for (auto t : small) {
-        //cout << t << " ";
-    //}
-    //cout << "In bigger than 99:";
-    //for (auto t : big) {
-        //cout << t << " ";
-    //}
-
     return 0;
 }
