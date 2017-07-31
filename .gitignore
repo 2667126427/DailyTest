@@ -111,7 +111,7 @@ _TeamCity*
 *.dotCover
 
 # NCrunch
-_NCrunch_*
+_NC#ideafile*/*runch_*
 .*crunch*.local.xml
 nCrunchTemp_*
 
@@ -274,4 +274,7 @@ __pycache__/
 *.out
 #count code lines
 count.sh
+#ideafile
+*/*/.idea
+*/*/out
 
