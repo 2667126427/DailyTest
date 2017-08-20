@@ -1,4 +1,4 @@
-public class Solution {
+public class GetSum {
     // 数学是个好东西，直接算出来通项求和
     int calculate(int number, int count) {
         int temp = 1;
@@ -29,7 +29,7 @@ public class Solution {
 
     // 挺无聊的小程序计算a + aa + aaa + aaaa + ... + aa...a
     public static void main(String[] args) {
-        Solution sol = new Solution();
+        GetSum sol = new GetSum();
         int n = 2;
         int count = 5;
         System.out.println(sol.calculate(n, count));
