@@ -1,6 +1,5 @@
-public class MagicNumber {
-    // 想用Set的，想想还是自己弄个数组吧
-    private static int[] isRecorded = new int[100];
+public class Main {
+    private static int lastNumber = 0;
 
     // 吸血鬼不会拼。。。
     private void magicNumber() {
@@ -17,6 +16,7 @@ public class MagicNumber {
             t %= 100;
             nums[2] = t / 10;
             nums[3] = t % 10;
+            // 给程序判断一下
             isMagic(i, nums, 0);
         }
     }
@@ -30,10 +30,15 @@ public class MagicNumber {
             nums[i] = t;
             a = nums[0] * 10 + nums[1];
             b = nums[2] * 10 + nums[3];
-            if (a * b == number && isRecorded[number % 91] == 0) {
+            if (a * b == number) {
+                // 这样好多了，一样直接叫停就行
+                if (number == lastNumber) {
+                    break;
+                }
                 System.out.println(a + " * " + b + " = " + number);
-                isRecorded[number % 91] = 1;
+                lastNumber = number;
             }
+            // 上面没过继续搜索
             isMagic(number, nums, index + 1);
             t = nums[index];
             nums[index] = nums[i];
@@ -45,9 +50,8 @@ public class MagicNumber {
     public static void main(String[] args) {
         // 计算时间
         long t1 = System.currentTimeMillis();
-        MagicNumber main = new MagicNumber();
+        Main main = new Main();
         main.magicNumber();
         System.out.println(System.currentTimeMillis() - t1);
     }
 }
-
