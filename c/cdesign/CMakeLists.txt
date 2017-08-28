@@ -5,3 +5,4 @@ set(CMAKE_C_STANDARD 11)
 
 set(SOURCE_FILES main.c Functions.h)
 add_executable(cdesign ${SOURCE_FILES})
+

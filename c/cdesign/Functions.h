@@ -26,6 +26,8 @@ const char *const houseModels[] = {"不限", "1室", "2室", "3室", "4室", "5�
 // 房屋所在区域
 const char *const houseLocations[] = {"不限", "东湖高新区", "洪山区", "江岸区", "东西湖区", "汉阳区", "武昌区", "江汉区"};
 
+int maxHouseId;
+
 // 给c语言加一个bool类型
 typedef int bool;
 const bool false = 0;
@@ -127,6 +129,9 @@ HousePtr readHouse(FILE *file, int id) {
     temp->next = NULL;
     // 设置编号
     temp->house_id = id;
+    if (id > maxHouseId) {
+        maxHouseId = id;
+    }
     // 读取相关信息
     fscanf(file, "%s", temp->model);
     fscanf(file, "%f", &temp->area);
@@ -434,6 +439,7 @@ int searchOneBuilding(const BuildingsPtr head) {
             printf("\n");
         }
     }
+    printf("\n");
     printf("请输入你想要找的区域id：\n");
     printf("\n");
     // 获取区域编号
@@ -456,7 +462,7 @@ int searchOneBuilding(const BuildingsPtr head) {
                 && oneBuildingTemp->floorCount >= low
                 && oneBuildingTemp->floorCount <= high) {
                 printf("楼盘id及名称：%d %s\n楼栋id：%d\n楼层高度：%d\n\n", temp->buildings_id, temp->name,
-                       oneBuildingTemp->buildings_id, oneBuildingTemp->floorCount);
+                       oneBuildingTemp->one_building_id, oneBuildingTemp->floorCount);
                 ++sum;
                 // 询问是否继续输出
                 if (sum % 3 == 0) {
@@ -486,6 +492,18 @@ int searchOneBuilding(const BuildingsPtr head) {
 int searchRoom(const BuildingsPtr head) {
     if (cancel())
         return 0;
+    printf("已有区域如下：\n");
+    for (size_t i = 0, sum = 0; i < sizeof(houseLocations) / sizeof(houseLocations[0]); ++i) {
+        printf("%lu：%s\t", i, houseLocations[i]);
+        ++sum;
+        if (sum % 3 == 0) {
+            printf("\n");
+        }
+    }
+    printf("\n");
+    printf("输入您希望的房屋所属区域：\n");
+    int location = 0;
+    scanf("%d", &location);
     printf("请输入您要查找的户型：\n");
     // 输出已有的户型
     for (size_t i = 0; i < sizeof(houseModels) / sizeof(houseModels[0]); ++i) {
@@ -518,7 +536,9 @@ int searchRoom(const BuildingsPtr head) {
                 if ((       // 判断普通户型或者对户型无限制
                             (startWith(houseTemp->model, houseModels[target]) || target == 0)
                             // 室数大于6的判断
-                            || (target >= 6 && startWith(houseTemp->model, "6")))
+                            || (target >= 6 && startWith(houseTemp->model, "6"))
+                    )
+                    && (temp->location_id == location || location == 0)
                     && houseTemp->prize >= low && houseTemp->prize <= high) {
                     // 满足条件输出信息
                     printf("楼盘名称：%s\n房子编号：%d\n面积及户型：%.2f %s\n价格：%.2f\n地理位置：%s %s\n\n",
@@ -531,7 +551,7 @@ int searchRoom(const BuildingsPtr head) {
                         char ch;
                         getchar();
                         scanf("%c", &ch);
-                        printf("get the char: %c\n", ch);
+//                        printf("get the char: %c\n", ch);
                         if (ch != 'y') {
                             // 不输出把标记设置为true就行了
                             isEnd = true;
@@ -557,13 +577,8 @@ int addBuildings(const BuildingsPtr head) {
     // 先分配空间
     BuildingsPtr temp = (BuildingsPtr) malloc(sizeof(Buildings));
     assert(temp != NULL);
-    BuildingsPtr nail = head;
-    // 找到最后一个节点
-    while (nail->next != NULL)nail = nail->next;
     temp->next = NULL;
     temp->head = NULL;
-    // 先把空间接上去
-    nail->next = temp;
     /*
     typedef struct Buildings {
         int buildings_id;
@@ -579,7 +594,7 @@ int addBuildings(const BuildingsPtr head) {
 //    printf("现有最大编号：%d\n", nail->buildings_id);
 //    printf("请输入要加入的楼盘的编号：");
 //    scanf("%d", &temp->buildings_id);
-    temp->buildings_id = nail->buildings_id + 1;
+
     printf("请输入要加入的楼盘的名称：");
     scanf("%s", temp->name);
     printf("请输入要加入的楼盘的所属区域id：\n");
@@ -600,6 +615,7 @@ int addBuildings(const BuildingsPtr head) {
         freeBuildings(temp);
         return 0;
     }
+    temp->location_id = id;
     printf("请输入楼盘具体位置（不要有空格）：");
 //    strcpy(temp->location, "嘿呀");
     scanf("%s", temp->location);
@@ -607,7 +623,11 @@ int addBuildings(const BuildingsPtr head) {
     printf("请输入开发商名称（不要有空格）：");
     scanf("%s", temp->developers);
     printf("加入完成，返回主菜单\n");
-
+    BuildingsPtr nail = head;
+    // 找到最后一个节点
+    while (nail->next != NULL)nail = nail->next;
+    nail->next = temp;
+    temp->buildings_id = nail->buildings_id + 1;
     return 0;
 }
 
@@ -620,17 +640,28 @@ int addOneBuilding(const BuildingsPtr head) {
     BuildingsPtr temp = head;
     int sum = 0;
     while (temp != NULL) {
-        printf("编号及名称：%d %s\t", temp->buildings_id, temp->name);
+        printf("编号及名称位置：%02d %-30s %-10s\n", temp->buildings_id, temp->name,
+               houseLocations[temp->location_id]);
         ++sum;
-        // 换行处理
-        if (sum % 5 == 0) printf("\n");
+        // 输出处理
+        if (sum % 5 == 0) {
+            printf("输入y继续输出，其它字母停止输出：");
+            char ch;
+            getchar();
+            scanf("%c", &ch);
+//            printf("get the char: %c\n", ch);
+            if (ch != 'y') {
+                // 不输出把标记设置为true就行了
+                break;
+            }
+        }
         temp = temp->next;
     }
     printf("\n");
-    if (cancel())
-        return 0;
+//    if (cancel())
+//        return 0;
     // 询问楼盘编号
-    printf("请输入要添加的楼栋所在的楼盘编号：\n");
+    printf("请输入要添加的楼栋所在的楼盘编号：");
     int id = 0;
     scanf("%d", &id);
     temp = head;
@@ -648,24 +679,12 @@ int addOneBuilding(const BuildingsPtr head) {
     oneBuildingTemp->head = NULL;
     oneBuildingTemp->buildings_id = id;
     // 输出已有楼栋，很有可能是空的。。。
-    printf("已有的楼栋如下：\n");
-    OneBuildingPtr nail = temp->head;
-    if (nail == NULL) {
-        temp->head = oneBuildingTemp;
-    } else {
-        while (nail->next != NULL) {
-            printf("编号及楼层数：%d %d\n", nail->one_building_id, nail->floorCount);
-            nail = nail->next;
-        }
-        printf("编号及楼层数：%d %d\n", nail->one_building_id, nail->floorCount);
-        nail->next = oneBuildingTemp;
-    }
-
-    printf("\n");
-    if (cancel()) {
-        freeOneBuilding(oneBuildingTemp);
-        return 0;
-    }
+//    printf("已有的楼栋如下：\n");
+//    printf("\n");
+//    if (cancel()) {
+//        freeOneBuilding(oneBuildingTemp);
+//        return 0;
+//    }
     /*
     typedef struct OneBuilding {
         int one_building_id;
@@ -678,10 +697,28 @@ int addOneBuilding(const BuildingsPtr head) {
     // 读取相关信息
 //    printf("请输入楼栋编号：");
 //    scanf("%d", &oneBuildingTemp->one_building_id);
-    oneBuildingTemp->one_building_id = nail->one_building_id + 1;
+
+
     printf("请输入楼栋楼层数：");
     scanf("%d", &oneBuildingTemp->floorCount);
+    if (oneBuildingTemp->floorCount <= 0) {
+        printf("输入数据有误， 返回主菜单\n");
+        freeOneBuilding(oneBuildingTemp);
+    }
     printf("输入完毕，返回主菜单\n");
+    OneBuildingPtr nail = temp->head;
+    if (nail == NULL) {
+        temp->head = oneBuildingTemp;
+        oneBuildingTemp->one_building_id = 1;
+    } else {
+        while (nail->next != NULL) {
+//            printf("编号及楼层数：%d %d\n", nail->one_building_id, nail->floorCount);
+            nail = nail->next;
+        }
+//        printf("编号及楼层数：%d %d\n", nail->one_building_id, nail->floorCount);
+        nail->next = oneBuildingTemp;
+        oneBuildingTemp->one_building_id = nail->one_building_id + 1;
+    }
     return 0;
 }
 
@@ -695,12 +732,13 @@ int addRoom(const BuildingsPtr head) {
     HousePtr house = (HousePtr) malloc(sizeof(House));
     house->next = NULL;
     while (temp != NULL) {
-        printf("%d %s\t", temp->buildings_id, temp->name);
+        printf("%02d %-20s %s\t", temp->buildings_id, houseLocations[temp->location_id], temp->name);
         ++sum;
-        if (sum % 5 == 0)
+        if (sum % 3 == 0)
             printf("\n");
         temp = temp->next;
     }
+    printf("\n");
     if (cancel()) {
         freeHouse(house);
         return 0;
@@ -745,17 +783,18 @@ int addRoom(const BuildingsPtr head) {
         return 0;
     }
 //    assert(oneBuilding != NULL);
-    printf("此楼栋已有的房屋信息如下：\n");
-    HousePtr houseTemp = oneBuilding->head;
+//    printf("此楼栋已有的房屋信息如下：\n");
+    HousePtr houseTemp;
     // 输出已有房屋
-    while (houseTemp != NULL) {
-        printf("房屋编号：%d\n户型：%s\n", houseTemp->house_id, houseTemp->model);
-        houseTemp = houseTemp->next;
-    }
-    printf("\n");
+//    while (houseTemp != NULL) {
+//        printf("房屋编号：%d\n户型：%s\n", houseTemp->house_id, houseTemp->model);
+//        houseTemp = houseTemp->next;
+//    }
+//    printf("\n");
     houseTemp = oneBuilding->head;
     if (houseTemp == NULL) {
         oneBuilding->head = house;
+
     } else {
         while (houseTemp->next != NULL) {
             houseTemp = houseTemp->next;
@@ -763,10 +802,11 @@ int addRoom(const BuildingsPtr head) {
         houseTemp->next = house;
     }
     assert(houseTemp != NULL);
+    house->house_id = ++maxHouseId;
     // 开始读入数据
-    printf("请输入要添加的房屋的id：");
-    scanf("%d", &id);
-    house->house_id = id;
+//    printf("请输入要添加的房屋的id：");
+//    scanf("%d", &id);
+//    house->house_id = id;
 //    sum = 0;
     // 显示已有户型
 //    printf("已有户型：\n");
@@ -779,8 +819,8 @@ int addRoom(const BuildingsPtr head) {
 //    }
     // 读入数据
     printf("输入要添加的房屋的户型（例：2室1厅1卫）：");
-    scanf("%d", &id);
-    strcpy(house->model, houseModels[id]);
+    scanf("%s", house->model);
+//    strcpy(house->model, houseModels[id]);
     printf("请输入房屋面积：");
     scanf("%f", &house->area);
     printf("请输入房屋价格（万元）：");
@@ -791,13 +831,14 @@ int addRoom(const BuildingsPtr head) {
 
 // 删除一个楼盘
 void delBuildings(BuildingsPtr *head) {
-    BuildingsPtr *temp = head;
+    BuildingsPtr temp = *head;
     BuildingsPtr buildingsTemp = *head;
     // 先把已有的信息输出
     printf("已有楼盘如下：\n");
     int sum = 0;
     while (buildingsTemp != NULL) {
-        printf("楼盘编号：%d\n楼盘名称：%s\n\n", buildingsTemp->buildings_id, buildingsTemp->name);
+        printf("楼盘编号及地域：%d %s\n楼盘名称：%s\n\n", buildingsTemp->buildings_id,
+               houseLocations[buildingsTemp->location_id], buildingsTemp->name);
         buildingsTemp = buildingsTemp->next;
         ++sum;
         if (sum % 5 == 0) {
@@ -817,24 +858,24 @@ void delBuildings(BuildingsPtr *head) {
     // 如果要删除的是第一个
     if (id == (*head)->buildings_id) {
         // 顺序比较重要
-        *temp = *head;
+        temp = *head;
         *head = (*head)->next;
-        freeBuildings(*temp);
+        freeBuildings(temp);
         printf("删除完毕，返回主菜单\n");
         return;
     }
     // 删除的不是第一个就往下面找吧
-    *temp = *head;
-    while ((*temp)->next != NULL && (*temp)->next->buildings_id != id) {
-        *temp = (*temp)->next;
+    temp = *head;
+    while (temp->next != NULL && temp->next->buildings_id != id) {
+        temp = temp->next;
     }
-    if ((*temp)->next == NULL) {
+    if (temp->next == NULL) {
         printf("输入数据有误，返回主菜单\n");
         return;
     }
     // 对应删除股即可
-    buildingsTemp = (*head)->next;
-    (*head)->next = buildingsTemp->next;
+    buildingsTemp = temp->next;
+    temp->next = buildingsTemp->next;
     freeBuildings(buildingsTemp);
     printf("删除完毕，返回主菜单\n");
 }
@@ -849,6 +890,7 @@ void delOneBuilding(const BuildingsPtr head) {
         printf("%d： %s\t", temp->buildings_id, temp->name);
         ++sum;
         if (sum % 5 == 0) {
+            printf("\n");
             getchar();
             // 询问是否继续输出
             printf("输入'y'继续输出：");
@@ -880,8 +922,11 @@ void delOneBuilding(const BuildingsPtr head) {
         printf("楼栋id：%d\n层数：%d\n\n", oneBuildingTemp->one_building_id, oneBuildingTemp->floorCount);
         oneBuildingTemp = oneBuildingTemp->next;
     }
+    if (cancel()) {
+        return;
+    }
     // 得到楼栋编号
-    printf("请输入你要删除的楼栋的编号：\n");
+    printf("请输入你要删除的楼栋的编号：");
     scanf("%d", &id);
     oneBuildingTemp = temp->head;
     // 如果是第一个就特殊处理一下
@@ -913,7 +958,8 @@ void delRoom(const BuildingsPtr head) {
     while (temp != NULL) {
         printf("%d： %s\t", temp->buildings_id, temp->name);
         ++sum;
-        if (sum % 5 == 0) {
+        if (sum % 3 == 0) {
+            printf("\n");
             getchar();
             printf("输入'y'继续输出：");
             if (getchar() != 'y') {
@@ -943,7 +989,7 @@ void delRoom(const BuildingsPtr head) {
         oneBuildingTemp = oneBuildingTemp->next;
     }
 
-    printf("请输入你要删除房屋所在的楼栋的编号：\n");
+    printf("请输入你要删除房屋所在的楼栋的编号：");
     scanf("%d", &id);
     oneBuildingTemp = temp->head;
     while (oneBuildingTemp != NULL && oneBuildingTemp->one_building_id != id) {
@@ -1061,6 +1107,7 @@ void saveAll(const BuildingsPtr head) {
     fclose(house);
 }
 
+// 统计数据
 void statistic(BuildingsPtr head) {
     int regions[7] = {0};
     int models[5] = {0};
@@ -1101,8 +1148,8 @@ void statistic(BuildingsPtr head) {
     // 统计完毕，进行输出
 
     // 首先输出地域分布
-    for (size_t i = 1; i < sizeof(houseLocations) / sizeof(houseLocations[0]); ++i) {
-        printf("地区：%-20s房屋类型数：%d\n", houseLocations[i], regions[i]);
+    for (size_t i = 0; i < sizeof(houseLocations) / sizeof(houseLocations[0]) - 1; ++i) {
+        printf("地区：%-20s房屋类型数：%d\n", houseLocations[i + 1], regions[i]);
     }
     printf("\n");
     // 输出房屋类型分布
