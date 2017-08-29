@@ -1,4 +1,4 @@
-public class Main {
+public class MagicNumber{
     private static int lastNumber = 0;
 
     // 吸血鬼不会拼。。。
@@ -50,7 +50,7 @@ public class Main {
     public static void main(String[] args) {
         // 计算时间
         long t1 = System.currentTimeMillis();
-        Main main = new Main();
+        MagicNumber main = new MagicNumber();
         main.magicNumber();
         System.out.println(System.currentTimeMillis() - t1);
     }
