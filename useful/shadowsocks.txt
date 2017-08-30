@@ -1,0 +1,21 @@
+系统ubuntu 16.04 LTS
+每次重装系统都要上网搜索，累死了，不如直接写到一个文件里面
+首先安装pip
+$sudo apt install python3-pip
+再安装shadowsocks
+$pip3 install shadowsocks
+安装完写配置文件，内容如下：
+{
+	"server":"服务器地址",	
+	"server_port":服务器端口,
+	"local_port":1080,	
+	"password":"服务器密码",	
+	"timeout":600,
+	"method":"连接方式"
+}
+保存文件随便到什么地方，记住位置，启动的方式就是
+$sslocal -c 文件位置
+设置chrome的代理，先安装proxyomg，设置proxy为socks5,127.0.0.1，端口1080，再设置auto switch，Rule list rules (Any request matching the rule list below)的profile设置成proxy，default是direct，下面文件的那个url是
+https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt
+如果有别的能用也行，Rule List Format选autoswitch，点download profile就行了
+
