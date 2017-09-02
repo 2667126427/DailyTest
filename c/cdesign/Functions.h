@@ -1,3 +1,31 @@
+//
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \|     |// '.
+//                 / \|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \  -  /// |     |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永无BUG
+//
+//
+//
+
 #ifndef CDESIGN_FUNCTIONS_H
 #define CDESIGN_FUNCTIONS_H
 
@@ -74,12 +102,19 @@ typedef struct Buildings {
 // 指针别名
 typedef Buildings *BuildingsPtr;
 
+// 清屏函数
+void cls() {
+    printf("\033c");
+}
+
 int cancel() {
     printf("是否取消操作（y/n）：");
     getchar();
     if (getchar() == 'y') {
+        cls();
         return 1;
     }
+    cls();
     return 0;
 }
 
@@ -340,21 +375,17 @@ void printBuildings(const BuildingsPtr head) {
 
 // 提供菜单选项
 int selectChoice() {
+    cls();
     // 设置大一点防止缓冲区溢出
     char choice[1024];
     // 输出提示
-    printf("请输入您要进行的操作的编号：\n");
-    printf("1：查询楼盘\t");
-    printf("2：查询楼栋\t");
-    printf("3：查询房屋\n");
-    printf("4：增加楼盘\t");
-    printf("5：增加楼栋\t");
-    printf("6：增加户型\n");
-    printf("7：删除楼盘\t");
-    printf("8：删除楼栋\t");
-    printf("9：删除户型\n");
-    printf("10：统计房屋信息\t");
-    printf("0：退出系统\n");
+    printf("#*************************************************************#\n");
+    printf("*           1：查询楼盘    2：查询楼栋    3：查询房屋         *\n");
+    printf("*           4：增加楼盘    5：增加楼栋    6：增加户型         *\n");
+    printf("*           7：删除楼盘    8：删除楼栋    9：删除户型         *\n");
+    printf("*           10：统计房屋信息              0：退出系统         *\n");
+    printf("#*************************************************************#\n");
+    printf("*                请输入您要进行的操作的编号：[ ]\b\b");
     // 接受输入
     scanf("%s", choice);
     // 判断是否全部是数字
@@ -362,10 +393,12 @@ int selectChoice() {
         // 不是数字报错，递归返回
         if (!isdigit(choice[i])) {
             printf("输入错误，请重新输入\n");
+            cls();
             return selectChoice();
         }
     }
     // 转换成数字返回
+    cls();
     return atoi(choice);
 }
 
@@ -501,14 +534,15 @@ int searchRoom(const BuildingsPtr head) {
         }
     }
     printf("\n");
-    printf("输入您希望的房屋所属区域：\n");
+    printf("输入您希望的房屋所属区域：");
     int location = 0;
     scanf("%d", &location);
-    printf("请输入您要查找的户型：\n");
+    printf("已有户型如下：\n");
     // 输出已有的户型
     for (size_t i = 0; i < sizeof(houseModels) / sizeof(houseModels[0]); ++i) {
         printf("%lu：%s\n", i, houseModels[i]);
     }
+    printf("请输入您要查找的户型：\n");
     int target = 0;
     char chs[1024];
     scanf("%s", chs);
@@ -1171,6 +1205,7 @@ void operations(BuildingsPtr *headp) {
     // 设置结束的标记
     bool isEnd = false;
     while (!isEnd) {
+        cls();
         // 通过函数获取选项
         choice = selectChoice();
         // switch跳转到对应的操作去
