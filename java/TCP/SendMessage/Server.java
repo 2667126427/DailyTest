@@ -1,4 +1,10 @@
+package SendMessage;
+
+import Time.Time;
+
 import java.io.DataInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -6,7 +12,7 @@ public class Server {
     private static final int PORT = 12345;//监听的端口号
 
     public static void main(String[] args) {
-        System.out.println("服务器启动...\n");
+        // 启动服务器
         Server server = new Server();
         server.init();
     }
@@ -39,16 +45,35 @@ public class Server {
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 String clientInputStr = input.readUTF();//这里要注意和客户端输出流的写方法对应,否则会抛 EOFException
                 // 处理客户端数据
-                System.out.println("客户端发过来的内容:" + clientInputStr);
+                // 创建当天的日志文件
+                // 加同步锁，防止两个socket同时打开
+                synchronized (this) {
+                    String fileName = Time.getDayTime() + ".log";
+                    // 追加打开
+                    FileWriter writer = new FileWriter(fileName, true);
+                    // 记录信息和接受时间
+                    writer.write(Time.getSecondTime() + ": " + clientInputStr + "\n");
+                    // 关闭writer才会保存
+                    writer.close();
+                }
             } catch (Exception e) {
-                System.out.println("服务器 run 异常: " + e.getMessage());
+                try {
+                    // 记录错误日志
+                    synchronized (this) {
+                        FileWriter writer = null;
+                        writer = new FileWriter(Time.getDayTime() + "error.log", true);
+                        writer.write(Time.getDayTime() + ": " + e + "\n");
+                        writer.close();
+                    }
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             } finally {
                 if (socket != null) {
                     try {
                         socket.close();
                     } catch (Exception e) {
                         socket = null;
-                        System.out.println("服务端 finally 异常:" + e.getMessage());
                     }
                 }
             }

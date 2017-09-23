@@ -1,10 +1,8 @@
 package SendMessage;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -13,20 +11,27 @@ public class Client {
     private static final String IP_ADDR = "localhost";//服务器地址
     private static final int PORT = 12345;//服务器端口号
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("客户端启动...");
         System.out.println("输入'q'退出。");
         Scanner in = new Scanner(System.in);
         String str = "hello";
-        while (!str.equalsIgnoreCase("q")) {
+        ServerSocket server = new ServerSocket();
+
+        while (true) {
             Socket socket = null;
             try {
+                // 先检测是否去发送
+                System.out.print("请输入: ");
+                str = in.nextLine();
+                if (str.equalsIgnoreCase("q")) {
+                    break;
+                }
+                // 可以发送再去打开socket
                 //创建一个流套接字并将其连接到指定主机上的指定端口号  
                 socket = new Socket(IP_ADDR, PORT);
                 //向服务器端发送数据
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                System.out.print("请输入: ");
-                str = in.nextLine();
                 // 写入socket
                 out.writeUTF(str);
                 out.close();
