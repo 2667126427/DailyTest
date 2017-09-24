@@ -62,7 +62,7 @@ public class Server {
                     synchronized (this) {
                         FileWriter writer = null;
                         writer = new FileWriter(Time.getDayTime() + "error.log", true);
-                        writer.write(Time.getDayTime() + ": " + e + "\n");
+                        writer.write(Time.getSecondTime() + ": " + e + "\n");
                         writer.close();
                     }
                 } catch (IOException e1) {

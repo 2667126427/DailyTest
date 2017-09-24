@@ -4,10 +4,8 @@ import java.util.Calendar;
 
 public class Time {
     private Time() {}
-
-    private static Calendar calendar = Calendar.getInstance();
-
     public static String getDayTime() {
+	Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -16,6 +14,7 @@ public class Time {
     }
 
     public static String getSecondTime() {
+	Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         int second = calendar.get(Calendar.SECOND);
