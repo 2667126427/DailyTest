@@ -16,9 +16,9 @@ for iter = 1:num_iters,
     % Hint: While debugging, it can be useful to print out the values
     %       of the cost function (computeCost) and gradient here.
     % 简直一脸蒙逼
-    temp = X * theta;
-    temp = X' * (temp - y);
-    theta = theta - alpha / m * temp;
+    % temp = X * theta;
+    % temp = X' * (temp - y);
+    theta = theta - (alpha / m) * X' * (X * theta - y);
     
     % ============================================================
 
