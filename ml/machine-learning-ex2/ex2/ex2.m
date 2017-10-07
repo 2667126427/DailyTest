@@ -22,29 +22,31 @@ clear ; close all; clc
 %% Load Data
 %  The first two columns contains the exam scores and the third column
 %  contains the label.
-
+% 加载数据
 data = load('ex2data1.txt');
 X = data(:, [1, 2]); y = data(:, 3);
 
 %% ==================== Part 1: Plotting ====================
 %  We start the exercise by first plotting the data to understand the 
 %  the problem we are working with.
-
+% 数据可视化
 fprintf(['Plotting data with + indicating (y = 1) examples and o ' ...
          'indicating (y = 0) examples.\n']);
-
+% 显示出来
 plotData(X, y);
 
 % Put some labels 
 hold on;
 % Labels and Legend
+% 加坐标轴label
 xlabel('Exam 1 score')
 ylabel('Exam 2 score')
 
 % Specified in plot order
+% 给点加标签
 legend('Admitted', 'Not admitted')
 hold off;
-
+% 怎么不动了
 fprintf('\nProgram paused. Press enter to continue.\n');
 pause;
 
@@ -55,15 +57,19 @@ pause;
 %  costFunction.m
 
 %  Setup the data matrix appropriately, and add ones for the intercept term
+% 获取数据大小
 [m, n] = size(X);
 
 % Add intercept term to x and X_test
+% 多加了一列，对应theta0
 X = [ones(m, 1) X];
 
 % Initialize fitting parameters
+% 有趣
 initial_theta = zeros(n + 1, 1);
 
 % Compute and display initial cost and gradient
+% 计算cost
 [cost, grad] = costFunction(initial_theta, X, y);
 
 fprintf('Cost at initial theta (zeros): %f\n', cost);

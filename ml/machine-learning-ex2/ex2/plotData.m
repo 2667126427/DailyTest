@@ -13,12 +13,14 @@ figure; hold on;
 %
 
 m = length(X);
+% 找出y对应1和0的位置 
+pos = find(y == 1);
+neg = find(y == 0);
 
-
+plot(X(pos, 1), X(pos, 2), 'k+', 'LineWidth', 2,'MarkerSize', 7);
+plot(X(neg, 1), X(neg, 2), 'ko', 'LineWidth', 2, 'MarkerFaceColor', 'y', 'MarkerSize', 7);
 
 % =========================================================================
-
-
 
 hold off;
 
