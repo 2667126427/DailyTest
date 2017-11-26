@@ -7,42 +7,19 @@
 
 #include <iostream>
 #include <fstream>
+#include "status.h"
 
 namespace DS {
 // 使用c++的输入输出
 
-
-
-#define TRUE 1
-#define FALSE 0
-#define OK 1
-#define ERROR 0
-#define INFEASTABLE (-1)
-#define OVERFLOW (-2)
-
-
 #define LIST_INIT_SIZE 100
 #define LISTINCREMENT  10
-// 状态定义
-    typedef int status;
-
-// 清屏函数
-    void cls() {
-        std::cout << "\033c";
-    }
-
-// 定义比较函数指针类型
-    template<typename T>
-    using Compare = bool (*)(const T &a, const T &b);
-// 定义遍历函数指针类型
-    template<typename T>
-    using Visit = void (*)(const T &a);
 
 // 定义模板类，模板不支持导出
     template<typename T = int>
     class linearList {
     public:
-        // 初始化函数
+        //  初始化函数
         status InitaList();
 
         //销毁的函数
@@ -78,6 +55,8 @@ namespace DS {
         // 遍历列表
         status ListTraverse(Visit<T> visit);
 
+        // 将表存储到文件中
+        status ListSave();
         ~linearList();
 
     private:
@@ -106,11 +85,43 @@ namespace DS {
         // 设置表的大小和容量
         listSize = LIST_INIT_SIZE;
         length = 0;
+
+        char ch = '\0';
+        std::cout << "是否从文件初始化(y/n)：";
+        std::cin >> ch;
+        if (ch == 'y') {
+            getchar();
+            std::cout << "请输入要使用的初始化的文件名：";
+            std::string str;
+            std::getline(std::cin, str);
+            std::fstream fin;
+            fin.open(str, std::ios_base::in);
+            if (!fin.is_open()) {
+                std::cerr << "文件打开错误。\n";
+                return ERROR;
+            } else {
+                int cnt = 0;
+                fin >> cnt;
+                T ele;
+                for (int i = 0; i < cnt; ++i) {
+                    fin >> ele;
+                    ListInsert(length + 1, ele);
+                }
+                std::cout << "初始化成功。\n";
+            }
+            fin.close();
+        }
+
         return OK;
     }
 
     template<typename T>
     status linearList<T>::DestroyList() {
+        if (listSize == 0) {
+            std::cerr << "表未初始化，无法进行销毁。\n";
+            return ERROR;
+        }
+        delete elem;
         length = 0;
         listSize = 0;
         return OK;
@@ -119,6 +130,10 @@ namespace DS {
     template<typename T>
     status linearList<T>::ClearList() {
         // 清空就是把长度设置为0
+        if (listSize == 0) {
+            std::cerr << "表未初始化，无法清理。\n";
+            return ERROR;
+        }
         length = 0;
         return OK;
     }
@@ -220,11 +235,11 @@ namespace DS {
         // 1 2 3 4, ex: 1, i from 0 to 2
         e = elem[index - 1];
         for (int i = index - 1; i < length - 1; ++i) {
-            elem[index] = elem[index + 1];
+            elem[i] = elem[i + 1];
         }
         --length;
 
-        return 0;
+        return OK;
     }
 
     template<typename T>
@@ -260,6 +275,33 @@ namespace DS {
         delete elem;
         elem = temp;
         listSize += LISTINCREMENT;
+    }
+
+    template<typename T>
+    status linearList<T>::ListSave() {
+        if (length == 0) {
+            std::cerr << "表为空，无法保存到文件。\n";
+            return ERROR;
+        }
+        getchar();
+        std::cout << "请输入文件名：";
+        std::string str;
+        std::getline(std::cin, str);
+        std::fstream fout;
+        fout.open(str, std::ios_base::out);
+        if (fout.is_open()) {
+            std::cout << "打开文件成功。\n";
+            fout << length << "\n";
+            for (int i = 0; i < length; ++i) {
+                fout << elem[i] << "\n";
+            }
+            fout.close();
+            return OK;
+        } else {
+            std::cerr << "文件打开失败。\n";
+            fout.close();
+            return ERROR;
+        }
     }
 }
 
