@@ -71,89 +71,125 @@ namespace DS {
         void largerList();
     };
 
+    
     template<typename T>
     status linearList<T>::InitaList() {
-        // 先清理上次剩余的链表
-        if (elem != nullptr) delete elem;
+        // 先判断是否被初始过
+        if (elem != nullptr) {
+            std::cerr << "线性表已存在，初始化失败，请先进行销毁操作。\n";
+            return ERROR;
+        }
         // 申请空间
         elem = new T[LIST_INIT_SIZE];
-        // 申请失败抛出异常
+        // 申请失败的情况
         if (elem == nullptr) {
             std::cerr << "Out of memory\n";
             return ERROR;
         }
-        // 设置表的大小和容量
+        // 设置表的现在长度和容量
         listSize = LIST_INIT_SIZE;
         length = 0;
-
+        // 询问是否从文件进行初始化
         char ch = '\0';
         std::cout << "是否从文件初始化(y/n)：";
         std::cin >> ch;
+        // 处理换行符
+        getchar();
         if (ch == 'y') {
-            getchar();
+            // 得到使用文件名称
             std::cout << "请输入要使用的初始化的文件名：";
             std::string str;
+            // 得到文件名
             std::getline(std::cin, str);
             std::fstream fin;
+            // 打开文件流
             fin.open(str, std::ios_base::in);
+            // 打开错误说明文件不存在或者损坏
             if (!fin.is_open()) {
                 std::cerr << "文件打开错误。\n";
                 return ERROR;
             } else {
+                // 先得到文件中元素的个数
                 int cnt = 0;
                 fin >> cnt;
                 T ele;
+                // 获取全部的元素并且插入到表尾
                 for (int i = 0; i < cnt; ++i) {
                     fin >> ele;
                     ListInsert(length + 1, ele);
                 }
+                // 输出提示信息
                 std::cout << "初始化成功。\n";
             }
+            // 注意记得关闭文件
             fin.close();
         }
-
+        // 返回状态
         return OK;
     }
 
+    // 销毁函数
     template<typename T>
     status linearList<T>::DestroyList() {
+        // 如果listSize为0表示未进行初始化或者已经被销毁过。
         if (listSize == 0) {
             std::cerr << "表未初始化，无法进行销毁。\n";
             return ERROR;
         }
-        delete elem;
+        // 只需要对空间进行清理，并把长度等信息置0即可。
+        delete[] elem;
         length = 0;
         listSize = 0;
+        // 返回销毁成功
         return OK;
     }
 
+    // 清空一个表
     template<typename T>
     status linearList<T>::ClearList() {
-        // 清空就是把长度设置为0
+        // 首先是判断表是否存在
         if (listSize == 0) {
-            std::cerr << "表未初始化，无法清理。\n";
+            std::cerr << "表未被初始化，清空失败\n";
             return ERROR;
         }
+        // 清空就是把长度设置为0
         length = 0;
         return OK;
     }
-
+    
+    // 判断是否为空表
     template<typename T>
     bool linearList<T>::ListEmpty() {
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
+            return false;
+        }
         // 表为空即长度为0
         return length == 0;
     }
-
+    
+    // 求表长的函数
     template<typename T>
     int linearList<T>::ListLength() {
+        // 未初始化的表其实个人觉得应该认为表长为0
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
+            return -1;
+        }
         return length;
     }
 
+    // 获取对应位置的元素
     template<typename T>
     status linearList<T>::GetElem(const int &index, T &e) {
-        if (ListEmpty()) {
-            std::cerr << "表为空。\n";
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
+            return ERROR;
         }
+        // 判断下表是否超出范围
         if (index > length) {
             std::cerr << "下标超过表的长度。\n";
             return ERROR;
@@ -161,6 +197,7 @@ namespace DS {
             std::cerr << "下标小于1。\n";
             return ERROR;
         }
+        // 返回元素
         e = elem[index - 1];
 
         return OK;
