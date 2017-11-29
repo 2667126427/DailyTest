@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <exception>
 #include "status.h"
 
 namespace DS {
@@ -203,140 +204,204 @@ namespace DS {
         return OK;
     }
 
+    // 定位元素的函数，参数为需要定位的元素和比较函数，需要存放的位置
     template<typename T>
-    status linearList<T>::LocateElem(const T &e, int &index, Compare<T> comp) {
+    status linearList<T>::LocateElem(const T &e, 
+                                     int &index, Compare<T> comp) {
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
+            return ERROR;
+        }
+        // 当不满足时设置为0，直接在这里设置即可
+        index = 0;
+        // 由于元素为无序的，所以直接线性搜索即可，注意搜索的区间即可
         for (int i = 0; i < length; ++i) {
+            // 如果此位置的元素满足要求，返回位置即可
             if (comp(e, elem[i])) {
                 index = i + 1;
                 return OK;
             }
         }
-
+        // 返回执行状态
         return ERROR;
     }
-
+    
+    // 查找前驱元素，参数为需要查找的元素和对应的比较函数
     template<typename T>
-    status linearList<T>::PriorElem(const T &cur, T &pre_e, Compare<T> comp) {
+    status linearList<T>::PriorElem(const T &cur,
+                                    T &pre_e, Compare<T> comp) {
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
+            return ERROR;
+        }
+        // 线性查找，结束条件为找到或者未找到
         for (int i = 0; i < length - 1; ++i) {
+            // 如果i + 1处元素为cur，那么i处即为所找，不考虑元素重复的情况
             if (comp(cur, elem[i + 1])) {
+                // 为参数赋值
                 pre_e = elem[i];
                 return OK;
             }
         }
-
+        // 返回查找状态
         return ERROR;
     }
-
+    
+    // 查找后驱元素
     template<typename T>
-    status linearList<T>::NextElem(const T &cur, T &next, Compare<T> comp) {
+    status linearList<T>::NextElem(const T &cur,
+                                   T &next, Compare<T> comp) {
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
+            return ERROR;
+        }
+        // 对元素进行一一比较
         for (int i = 1; i < length; ++i) {
             if (comp(cur, elem[i - 1])) {
                 next = elem[i];
                 return OK;
             }
         }
-
+        // 返回错误状态
         return ERROR;
     }
-
+    
+    // 插入函数
     template<typename T>
     status linearList<T>::ListInsert(const int &index, const T &e) {
-        if (index < 1) {
-            std::cerr << "下标应该大于0。\n";
-            return ERROR;
-        } else if (index > length + 1) {
-            std::cerr << "下标应该小于表的长度加一\n";
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
             return ERROR;
         }
+        // 再判断插入位置是否合理
+        if (index < 1 || index > length + 1) {
+            std::cerr << "下标不合法。\n";
+            return ERROR;
+        }
+        // 如果表满了则需要进行扩容
         if (length >= listSize) {
             largerList();
         }
-        // 1 2 3 4, ex: 1, 1
+        // 将对应位置的元素向后移动为插入的元素腾出空间
         for (int i = length; i >= index; --i) {
             elem[i] = elem[i - 1];
         }
+        // 将元素放置好
         elem[index - 1] = e;
+        // 最后长度加一
         ++length;
         return OK;
     }
-
+    
+    // 删除指定位置元素
     template<typename T>
     status linearList<T>::ListDelete(const int &index, T &e) {
-        if (index < 1) {
-            std::cerr << "下标应该大于0。\n";
-            return ERROR;
-        } else if (index > length) {
-            std::cerr << "下标应该小于表的长度加一\n";
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
             return ERROR;
         }
-        // 1 2 3 4, ex: 1, i from 0 to 2
+        // 判断参数是否合法
+        if (index < 1 || index > length) {
+            std::cerr << "下标不合法。\n";
+            return ERROR;
+        } 
+        // 若下表合法将元素取出
         e = elem[index - 1];
+        // 将对应位置元素前移
         for (int i = index - 1; i < length - 1; ++i) {
             elem[i] = elem[i + 1];
         }
+        // 长度减一
         --length;
-
+        // 返回运行结果
         return OK;
     }
 
+    // 对表进行遍历，参数只需要使用的函数
     template<typename T>
     status linearList<T>::ListTraverse(Visit<T> visit) {
-        if (ListEmpty()) {
-            std::cerr << "表为空，无法遍历。\n";
+        // 首先判断是否是个未被初始化的表
+        if (listSize == 0) {
+            std::cerr << "表未被初始化。\n";
             return ERROR;
         }
-
+        // 进行遍历
         for (int i = 0; i < length; ++i) {
             visit(elem[i]);
         }
-
+        // 返回遍历状态
         return OK;
     }
 
     template<typename T>
     linearList<T>::~linearList() {
+        // c++中delete空指针不会产生异常
         delete elem;
     }
-
+    
+    // 为列表扩容
     template<typename T>
     void linearList<T>::largerList() {
-        auto *temp = new T[listSize + LISTINCREMENT];
-        if (temp == nullptr) {
-            std::cerr << "Out of memory";
+        // 先尝试开辟更大的空间
+        T *temp = nullptr;
+        try {
+            temp = new T[listSize + LISTINCREMENT];
+        } 
+        // 开辟失败了会抛出异常，正确做法是结束程序
+        catch (const std::bad_alloc &e) {
+            std::cerr << "ERROR" << e << std::endl;
             exit(EXIT_FAILURE);
         }
-
+        // 如果没有失败就把原来的元素复制过来
         for (int i = 0; i < length; ++i) {
             temp[i] = elem[i];
         }
-        delete elem;
+        // 记得清理空间
+        delete[] elem;
+        // 为elem重新赋值
         elem = temp;
+        // 调整容量
         listSize += LISTINCREMENT;
     }
-
+    
+    // 保存表的函数
     template<typename T>
     status linearList<T>::ListSave() {
-        if (length == 0) {
+        // 如果长度为0就或者未初始化不进行保存
+        if (length == 0 || elem == nullptr) {
             std::cerr << "表为空，无法保存到文件。\n";
             return ERROR;
         }
+        // 处理换行符
         getchar();
+        // 得到文件名
         std::cout << "请输入文件名：";
         std::string str;
         std::getline(std::cin, str);
+        // 打开文件输出流
         std::fstream fout;
         fout.open(str, std::ios_base::out);
+        // 检测打开状态
         if (fout.is_open()) {
             std::cout << "打开文件成功。\n";
+            // 先将长度信息保存到文件中
             fout << length << "\n";
+            // 依次将表元素保存到文件中，具体保存的方法
+            // 由对模板特例化中对<<运算符的重载决定
             for (int i = 0; i < length; ++i) {
                 fout << elem[i] << "\n";
             }
+            // 关闭文件流
             fout.close();
             return OK;
         } else {
+            // 打开写入文件失败，报错并返回状态
             std::cerr << "文件打开失败。\n";
-            fout.close();
             return ERROR;
         }
     }
