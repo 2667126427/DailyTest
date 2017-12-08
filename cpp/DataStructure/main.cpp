@@ -1,10 +1,9 @@
-/* Linear Table On Sequence Structure */
+//#include "testLinkedList.h"
 #include "testLinearList.h"
 
 int main() {
-    testLinearList();
-
+    //testLinkedList();
+	testLinearList();
 
     return 0;
-}//end of main()
-/*--------page 23 on textbook --------------------*/
+}
