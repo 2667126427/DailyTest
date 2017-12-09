@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 
 #define TRUE 1
 #define FALSE 0
@@ -15,13 +16,20 @@
 
 using status = int;
 
+// clear the screen
 void cls() {
     system("cls");
 }
 
+// insert into left or right
+enum LR { L = 0, R = 1 };
+
+// Compare function pointer defination
 template<typename T>
-using Compare = bool (*)(const T &a, const T &b);
+using Compare = bool(*)(const T &a, const T &b);
+
+// Visit function pointer defination
 template<typename T>
-using Visit = void (*)(const T &a);
+using Visit = void(*)(const T &a);
 
 #endif //DATASTRUCTURE_STATUS_H
