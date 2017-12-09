@@ -1,9 +1,9 @@
-//#include "testLinkedList.h"
-#include "testLinearList.h"
+#include "testLinkedList.h"
+//#include "testLinearList.h"
 
 int main() {
-    //testLinkedList();
-	testLinearList();
+    testLinkedList();
+	//testLinearList();
 
     return 0;
 }
