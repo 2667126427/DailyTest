@@ -8,6 +8,7 @@
 // 增长速率
 #define LISTINCREMENT  10
 
+<<<<<<< HEAD
 // 定义模板参数
 template<typename T>
 // 类定义
@@ -43,6 +44,30 @@ private:
         // 移交指针
         elem = temp;
         // 容量增长
+=======
+template<typename T>
+class LinearList {
+private:
+    T * elem = nullptr;
+    int length = 0;
+    int listSize = 0;
+    //using status = int;
+
+    void largerList() {
+        T *temp = nullptr;
+        try {
+            temp = new T[listSize + LISTINCREMENT];
+        }
+        catch (const std::bad_alloc &e) {
+            std::cerr << "ERROR: " << e.what() << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        for (int i = 0; i < length; ++i) {
+            temp[i] = elem[i];
+        }
+        delete[] elem;
+        elem = temp;
+>>>>>>> master
         listSize += LISTINCREMENT;
     }
 public:
@@ -50,12 +75,20 @@ public:
 
     // 初始化函数
     status InitaList() {
+<<<<<<< HEAD
         // 已经进行了初始化
         if (listSize != 0) {
             std::cerr << "线性表已存在，初始化失败，请先进行销毁操作。\n" << std::endl;
             return ERROR;
         }
         // 初始化需要分配空间
+=======
+        if (elem != nullptr) {
+            std::cerr << "线性表已存在，初始化失败，请先进行销毁操作。\n" << std::endl;
+            return ERROR;
+        }
+
+>>>>>>> master
         try {
             // new空间
             elem = new T[LIST_INIT_SIZE];
@@ -66,16 +99,23 @@ public:
             // 返回错误
             return ERROR;
         }
+<<<<<<< HEAD
         // 表的容量即为LIST_INIT_SIZE
         listSize = LIST_INIT_SIZE;
         // 长度设为0
         length = 0;
         char ch;
         // 询问是否从文件初始化
+=======
+        listSize = LIST_INIT_SIZE;
+        length = 0;
+        char ch = '\0';
+>>>>>>> master
         std::cout << "if initalize from file(y/n): ";
         std::cin >> ch;
         getchar();
         if (ch == 'y') {
+<<<<<<< HEAD
             // 从文件初始化需要输入文件名
             std::cout << "Please enter file name: ";
             std::string file_name;
@@ -84,24 +124,39 @@ public:
             // 打开输入流
             std::fstream fin(file_name, std::ios_base::in);
             // 判断是否打开完成
+=======
+            std::cout << "Please enter file name: ";
+            std::string file_name;
+            std::getline(std::cin, file_name);
+            std::fstream fin;
+            fin.open(file_name, std::ios_base::in);
+>>>>>>> master
             if (!fin.is_open()) {
                 std::cerr << "Open file failed.\n";
                 return ERROR;
             }
             else {
                 int cnt = 0;
+<<<<<<< HEAD
                 // 输入文件中的元素数量
                 fin >> cnt;
                 // 局部元素
                 T ele;
                 // 进行插入操作
+=======
+                fin >> cnt;
+                T ele;
+>>>>>>> master
                 for (int i = 0; i < cnt; ++i) {
                     fin >> ele;
                     ListInsert(length + 1, ele);
                 }
                 std::cout << "Initalize from file successfully.\n";
             }
+<<<<<<< HEAD
             // 关闭文件流
+=======
+>>>>>>> master
             fin.close();
         }
         return OK;
@@ -109,16 +164,24 @@ public:
 
     // 销毁线性表
     status DestroyList() {
+<<<<<<< HEAD
         // 如果未进行初始化
+=======
+>>>>>>> master
         if (listSize == 0) {
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 清理空间
         delete[] elem;
         // 置为空指针
         elem = nullptr;
         // 长度和容量置为0
+=======
+        delete[] elem;
+        elem = nullptr;
+>>>>>>> master
         length = 0;
         listSize = 0;
         return OK;
@@ -126,12 +189,18 @@ public:
 
     // 清空线性表
     status ClearList() {
+<<<<<<< HEAD
         // 未初始化
+=======
+>>>>>>> master
         if (listSize == 0) {
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 清空只需重置表长即可
+=======
+>>>>>>> master
         length = 0;
         return OK;
     }
@@ -140,9 +209,14 @@ public:
     bool ListEmpty() {
         if (listSize == 0) {
             std::cerr << "List has not been initalized.\n";
+<<<<<<< HEAD
             return true;
         }
         // 判断表长是否为0即可
+=======
+            return false;
+        }
+>>>>>>> master
         return length == 0;
     }
 
@@ -152,7 +226,10 @@ public:
             std::cerr << "List has not been initalized.\n";
             return -1;
         }
+<<<<<<< HEAD
         // 返回表长
+=======
+>>>>>>> master
         return length;
     }
 
@@ -162,12 +239,18 @@ public:
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 判断下表合法性
+=======
+>>>>>>> master
         if (index > length || index < 1) {
             std::cerr << "Index out of bounds.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 直接获取
+=======
+>>>>>>> master
         e = elem[index - 1];
 
         return OK;
@@ -179,9 +262,13 @@ public:
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 下标初始化
         index = 0;
         // 遍历
+=======
+        index = 0;
+>>>>>>> master
         for (int i = 0; i < length; ++i) {
             if (comp(e, elem[i])) {
                 index = i + 1;
@@ -197,7 +284,10 @@ public:
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 遍历即可，注意范围
+=======
+>>>>>>> master
         for (int i = 0; i < length - 1; ++i) {
             if (comp(cur, elem[i + 1])) {
                 pre_e = elem[i];
@@ -213,7 +303,10 @@ public:
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 和前驱部分相同，遍历即可
+=======
+>>>>>>> master
         for (int i = 1; i < length; ++i) {
             if (comp(cur, elem[i - 1])) {
                 next = elem[i];
@@ -229,11 +322,15 @@ public:
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 判断插入位置合法性
+=======
+>>>>>>> master
         if (index < 1 || index > length + 1) {
             std::cerr << "Index out of bounds.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 如果表已经满了，则需要扩容
         if (length >= listSize) {
             // 进行扩容
@@ -246,6 +343,15 @@ public:
         // 插入元素
         elem[index - 1] = e;
         // 长度要加1
+=======
+        if (length >= listSize) {
+            largerList();
+        }
+        for (int i = length; i >= index; --i) {
+            elem[i] = elem[i - 1];
+        }
+        elem[index - 1] = e;
+>>>>>>> master
         ++length;
         return OK;
     }
@@ -256,11 +362,15 @@ public:
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 判断下标合法性
+=======
+>>>>>>> master
         if (index < 1 || index > length) {
             std::cerr << "Index out of bounds.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 直接返回即可
         e = elem[index - 1];
         // 将后面的函数向前移
@@ -268,6 +378,12 @@ public:
             elem[i] = elem[i + 1];
         }
         // 长度减1
+=======
+        e = elem[index - 1];
+        for (int i = index - 1; i < length - 1; ++i) {
+            elem[i] = elem[i + 1];
+        }
+>>>>>>> master
         --length;
         return OK;
     }
@@ -278,7 +394,10 @@ public:
             std::cerr << "List has not been initalized.\n";
             return ERROR;
         }
+<<<<<<< HEAD
         // 依次遍历即可
+=======
+>>>>>>> master
         for (int i = 0; i < length; ++i) {
             visit(elem[i]);
         }
@@ -292,6 +411,7 @@ public:
             return ERROR;
         }
         getchar();
+<<<<<<< HEAD
         // 保存文件需要输入文件名
         std::cout << "Please enter file name: ";
         std::string file_name;
@@ -309,6 +429,19 @@ public:
                 fout << elem[i] << "\n";
             }
             // 关闭文件流
+=======
+        std::cout << "Please enter file name: ";
+        std::string str;
+        std::getline(std::cin, str);
+        std::fstream fout;
+        fout.open(str, std::ios_base::out);
+        if (fout.is_open()) {
+            std::cout << "Open file successfully.\n";
+            fout << length << "\n";
+            for (int i = 0; i < length; ++i) {
+                fout << elem[i] << "\n";
+            }
+>>>>>>> master
             fout.close();
             std::cout << "Save successfully.\n";
             return OK;
