@@ -1,9 +1,9 @@
-//#include "testLinkedList.h"
-#include "testLinearList.h"
+// 包含头文件
+#include "testLinkedList.h"
 
 int main() {
-    //testLinkedList();
-	testLinearList();
+    // 测试函数
+    testLinkedList();
 
     return 0;
 }
