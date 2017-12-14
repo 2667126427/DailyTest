@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <cstdio>
 
 #define TRUE 1
 #define FALSE 0
