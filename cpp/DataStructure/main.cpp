@@ -1,9 +1,9 @@
-// °üº¬Í·ÎÄ¼þ
-#include "testLinkedList.h"
+// ï¿½ï¿½ï¿½ï¿½Í·ï¿½Ä¼ï¿½
+#include "testBinaryTree.h"
 
 int main() {
-    // ²âÊÔº¯Êý
-    testLinkedList();
+    // ï¿½ï¿½ï¿½Ôºï¿½ï¿½ï¿½
+    testBinaryTree();
 
     return 0;
 }
