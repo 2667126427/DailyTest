@@ -21,6 +21,11 @@ void cls() {
     system("cls");
 }
 
+void wait() {
+    getchar();
+    getchar();
+}
+
 // insert into left or right
 enum LR { L = 0, R = 1 };
 

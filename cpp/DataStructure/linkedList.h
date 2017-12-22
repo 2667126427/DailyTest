@@ -1,75 +1,75 @@
 #ifndef DATASTRUCTURE_LINKEDLIST_H
 #define DATASTRUCTURE_LINKEDLIST_H
-// °üº¬ËùĞèÍ·ÎÄ¼ş
+// åŒ…å«æ‰€éœ€å¤´æ–‡ä»¶
 #include "status.h"
 
-// Ê¹ÓÃÄ£°å
+// ä½¿ç”¨æ¨¡æ¿
 template<typename T = int>
-// ¶¨ÒåÀà
+// å®šä¹‰ç±»
 class LinkedList {
 private:
-    // ½áµãÀàĞÍ
+    // ç»“ç‚¹ç±»å‹
     struct Node {
-        // Öµ
+        // å€¼
         T value;
-        // Ö¸ÏòÏÂÒ»¸öÎÄ¼şµÄÖ¸Õë
+        // æŒ‡å‘ä¸‹ä¸€ä¸ªæ–‡ä»¶çš„æŒ‡é’ˆ
         Node *next;
-        // É¾³ıÄ¬ÈÏ¹¹Ôìº¯Êı
+        // åˆ é™¤é»˜è®¤æ„é€ å‡½æ•°
         Node() = delete;
-        // ¶¨Òå¹¹Ôìº¯Êı
+        // å®šä¹‰æ„é€ å‡½æ•°
         Node(const T &value) : value(value), next(nullptr) {}
     };
-    // ¶¨ÒåÍ·Ö¸Õë
+    // å®šä¹‰å¤´æŒ‡é’ˆ
     Node *head = nullptr;
-    // Á´±í³¤¶È
+    // é“¾è¡¨é•¿åº¦
     int length = 0;
-    // ÊÇ·ñ½øĞĞÁË³õÊ¼»¯
+    // æ˜¯å¦è¿›è¡Œäº†åˆå§‹åŒ–
     bool initaled = false;
 public:
-    // ³õÊ¼»¯º¯Êı
+    // åˆå§‹åŒ–å‡½æ•°
     status InitaList() {
-        // ÒÑ¾­³õÊ¼»¯¹ıµÄ·µ»ØERROR
+        // å·²ç»åˆå§‹åŒ–è¿‡çš„è¿”å›ERROR
         if (initaled) {
-            // Êä³ö´íÎóĞÅÏ¢
+            // è¾“å‡ºé”™è¯¯ä¿¡æ¯
             std::cerr << "The list had been initalized.\n";
             return ERROR;
         }
-        // ³¤¶È³õÊ¼»¯Îª0
+        // é•¿åº¦åˆå§‹åŒ–ä¸º0
         length = 0;
-        // Ñ¯ÎÊÊÇ·ñ´ÓÎÄ¼ş³õÊ¼»¯
+        // è¯¢é—®æ˜¯å¦ä»æ–‡ä»¶åˆå§‹åŒ–
         std::cout << "initalize from file(y/n):";
         char ch;
-        // ÊäÈëÑ¡Ôñ
+        // è¾“å…¥é€‰æ‹©
         std::cin >> ch;
         if (ch == 'y') {
             getchar();
-            // µÃµ½ÎÄ¼şÃû
+            // å¾—åˆ°æ–‡ä»¶å
             std::cout << "Please enter name of the file: ";
             std::string file_name;
             std::getline(std::cin, file_name);
-            // ´ò¿ªÎÄ¼şÁ÷
+            // æ‰“å¼€æ–‡ä»¶æµ
             std::fstream fin(file_name, std::ios_base::in);
-            // ²é¿´´ò¿ªÊÇ·ñ³É¹¦
+            // æŸ¥çœ‹æ‰“å¼€æ˜¯å¦æˆåŠŸ
             if (fin.is_open()) {
-                // ½øĞĞÊäÈëÊı¾İ
+                // è¿›è¡Œè¾“å…¥æ•°æ®
                 initaled = true;
                 int cnt = 0;
-                // µÃµ½Êı¾İ¸öÊı
+                // å¾—åˆ°æ•°æ®ä¸ªæ•°
                 fin >> cnt;
-                // ¶¨Òå¾Ö²¿±äÁ¿
+                // å®šä¹‰å±€éƒ¨å˜é‡
                 T temp;
                 for (int i = 0; i < cnt; ++i) {
-                    // ÊäÈë±äÁ¿
+                    // è¾“å…¥å˜é‡
                     fin >> temp;
-                    // ²åÈëµ½Á´±íºóÃæ
+                    // æ’å…¥åˆ°é“¾è¡¨åé¢
                     ListInsert(length + 1, temp);
                 }
-                // ¹Ø±ÕÎÄ¼şÁ÷
+                // å…³é—­æ–‡ä»¶æµ
                 fin.close();
                 std::cout << "Initalize from file successfully.\n";
             }
             else {
-                // ·ñÔòÊä³ö´íÎó
+                // å¦åˆ™è¾“å‡ºé”™è¯¯
                 std::cerr << "Open file failed.\n";
                 return ERROR;
             }
@@ -79,9 +79,9 @@ public:
         return OK;
     }
 
-    // Ïú»ÙÁ´±í
+    // é”€æ¯é“¾è¡¨
     status DestroyList() {
-        // Èç¹ûÎ´³õÊ¼»¯·µ»Ø´íÎó
+        // å¦‚æœæœªåˆå§‹åŒ–è¿”å›é”™è¯¯
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
@@ -89,113 +89,113 @@ public:
 
         Node *temp = head;
         Node *pre;
-        // ÇåÀíËùÓĞÁ´±í¿Õ¼ä
+        // æ¸…ç†æ‰€æœ‰é“¾è¡¨ç©ºé—´
         while (temp != nullptr) {
             pre = temp->next;
             delete temp;
             temp = pre;
         }
-        // Í·Ö¸ÕëÖÃÎª¿Õ
+        // å¤´æŒ‡é’ˆç½®ä¸ºç©º
         head = nullptr;
-        // ³¤¶ÈÖÃÁã
+        // é•¿åº¦ç½®é›¶
         length = 0;
-        // ³õÊ¼»¯ÖÃÎªfalse
+        // åˆå§‹åŒ–ç½®ä¸ºfalse
         initaled = false;
         return OK;
     }
 
-    // Çå¿ÕÁ´±í
+    // æ¸…ç©ºé“¾è¡¨
     status ClearList() {
-        // Î´³õÊ¼»¯²»ÄÜÇå¿Õ
+        // æœªåˆå§‹åŒ–ä¸èƒ½æ¸…ç©º
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
-        // Î¨Ò»Çø±ğ¾ÍÊÇ´İ»ÙºóµÄ³õÊ¼»¯×´Ì¬Îªtrue
+        // å”¯ä¸€åŒºåˆ«å°±æ˜¯æ‘§æ¯åçš„åˆå§‹åŒ–çŠ¶æ€ä¸ºtrue
         DestroyList();
         initaled = true;
         return OK;
     }
 
-    // ¼ì²âÊÇ·ñÎª¿Õ±í
+    // æ£€æµ‹æ˜¯å¦ä¸ºç©ºè¡¨
     bool ListEmpty() const {
-        // Î´³õÊ¼»¯µÄÄ¬ÈÏÊÇ¿Õ±í
+        // æœªåˆå§‹åŒ–çš„é»˜è®¤æ˜¯ç©ºè¡¨
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return true;
         }
-        // ÅĞ¶Ï³¤¶ÈÊÇ·ñÎª0
+        // åˆ¤æ–­é•¿åº¦æ˜¯å¦ä¸º0
         return length == 0;
     }
 
-    // µÃµ½Á´±í³¤¶È
+    // å¾—åˆ°é“¾è¡¨é•¿åº¦
     int ListLength() const {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return -1;
         }
-        // ·µ»Ø³¤¶È
+        // è¿”å›é•¿åº¦
         return length;
     }
 
-    // »ñÈ¡ÌØ¶¨Î»ÖÃµÄÔªËØ
+    // è·å–ç‰¹å®šä½ç½®çš„å…ƒç´ 
     status GetElem(const int &index, T &e) const {
-        // Î´³õÊ¼»¯±¨´í
+        // æœªåˆå§‹åŒ–æŠ¥é”™
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
-        // ÅĞ¶ÏÏÂ±êÊÇ·ñºÏ·¨
+        // åˆ¤æ–­ä¸‹æ ‡æ˜¯å¦åˆæ³•
         if (index < 0 || index > length) {
             std::cerr << "Index out of bounds.\n";
             return ERROR;
         }
-        // ¶¨Òå¾Ö²¿±äÁ¿
+        // å®šä¹‰å±€éƒ¨å˜é‡
         auto temp = head;
-        // index´¦ÔªËØÏòºóÒÆ¶¯index-1´Î¼´¿É
+        // indexå¤„å…ƒç´ å‘åç§»åŠ¨index-1æ¬¡å³å¯
         for (int i = 0; i < index - 1; ++i) {
             temp = temp->next;
         }
-        // »ñÈ¡Öµ
+        // è·å–å€¼
         e = temp->value;
 
         return OK;
     }
 
-    // ¶¨Î»ÔªËØ
+    // å®šä½å…ƒç´ 
     status LocateElem(const T &e, int &index, Compare<T> comp) const {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
-        // ¾Ö²¿Í·Ö¸Õë
+        // å±€éƒ¨å¤´æŒ‡é’ˆ
         auto temp_ptr = head;
-        // ±éÀúÔªËØ£¬¿´ÊÇ·ñÓĞcompÎªÕæµÄ
+        // éå†å…ƒç´ ï¼Œçœ‹æ˜¯å¦æœ‰compä¸ºçœŸçš„
         for (int i = 0; i < length; i++) {
             if (comp(e, temp_ptr->value)) {
-                // ´æÔÚ¾Í·µ»ØÏÂ±ê
+                // å­˜åœ¨å°±è¿”å›ä¸‹æ ‡
                 index = i + 1;
                 return OK;
             }
-            // Ö¸ÕëºóÒÆ
+            // æŒ‡é’ˆåç§»
             temp_ptr = temp_ptr->next;
         }
-        // ·ñÔò¾ÍÊÇÃ»ÓĞ
+        // å¦åˆ™å°±æ˜¯æ²¡æœ‰
         index = 0;
         return ERROR;
     }
 
-    // »ñÈ¡Ç°ÇıÔªËØ
+    // è·å–å‰é©±å…ƒç´ 
     status PriorElem(const T &cur, T &pre_e, Compare<T> comp) const {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
-        // ¾Ö²¿Í·Ö¸Õë
+        // å±€éƒ¨å¤´æŒ‡é’ˆ
         auto temp_ptr = head;
-        // ±éÀúÔªËØ
+        // éå†å…ƒç´ 
         while (temp_ptr != nullptr && temp_ptr->next != nullptr) {
-            // Èç¹û´Ë´¦ÔªËØµÄºóÇıÊÇ¸ø³öµÄÔªËØ£¬·µ»Ø´ËÔªËØ
+            // å¦‚æœæ­¤å¤„å…ƒç´ çš„åé©±æ˜¯ç»™å‡ºçš„å…ƒç´ ï¼Œè¿”å›æ­¤å…ƒç´ 
             if (comp(temp_ptr->next->value, cur)) {
                 pre_e = temp_ptr->value;
                 return OK;
@@ -206,14 +206,14 @@ public:
         return ERROR;
     }
 
-    // »ñµÃºóÇı
+    // è·å¾—åé©±
     status NextElem(const T &cur, T &next, Compare<T> comp) const {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
         auto temp_ptr = head;
-        // Èç¹û´ËÔªËØÂú×ãcompÎªÕæ£¬ÏÂÒ»¸ö¼´ÎªËùÇóÔªËØ
+        // å¦‚æœæ­¤å…ƒç´ æ»¡è¶³compä¸ºçœŸï¼Œä¸‹ä¸€ä¸ªå³ä¸ºæ‰€æ±‚å…ƒç´ 
         while (temp_ptr != nullptr && temp_ptr->next != nullptr) {
             if (comp(temp_ptr->value, cur)) {
                 next = temp_ptr->next->value;
@@ -225,53 +225,53 @@ public:
         return ERROR;
     }
 
-    // ²åÈëÔªËØ
+    // æ’å…¥å…ƒç´ 
     status ListInsert(const int &index, const T &e) {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
-        // ÅĞ¶ÏÏÂ±êÊÇ·ñºÏ·¨
+        // åˆ¤æ–­ä¸‹æ ‡æ˜¯å¦åˆæ³•
         if (index < 1 || index > length + 1) {
             std::cerr << "Index out of bounds\n";
             return ERROR;
         }
-        // Ê¹ÓÃ³õÊ¼ÖµĞÂ½¨½áµã
+        // ä½¿ç”¨åˆå§‹å€¼æ–°å»ºç»“ç‚¹
         auto t = new Node(e);
-        // ²åÈëµ½Ê×ÔªËØÎ»ÖÃÌØÊâ´¦Àí
+        // æ’å…¥åˆ°é¦–å…ƒç´ ä½ç½®ç‰¹æ®Šå¤„ç†
         if (index == 1) {
             t->next = head;
             head = t;
         }
         else {
-            // ÏòºóÒÆ¶¯µ½ÊÊµ±Î»ÖÃ
+            // å‘åç§»åŠ¨åˆ°é€‚å½“ä½ç½®
             auto pre = head;
             for (int i = 0; i < index - 2; ++i) {
                 pre = pre->next;
             }
-            // ½«t²åÈë
+            // å°†tæ’å…¥
             t->next = pre->next;
             pre->next = t;
         }
-        // ³¤¶È¼Ó1
+        // é•¿åº¦åŠ 1
         ++length;
 
         return OK;
     }
 
-    // É¾³ıÔªËØ
+    // åˆ é™¤å…ƒç´ 
     status ListDelete(const int &index, T &e) {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
-        // ÅĞ¶ÏÏÂ±êºÏ·¨ĞÔ
+        // åˆ¤æ–­ä¸‹æ ‡åˆæ³•æ€§
         if (index < 1 || index > length) {
             std::cerr << "Index out of bounds\n";
             return ERROR;
         }
 
-        // É¾³ıÊ×ÔªËØÌØÊâ´¦Àí
+        // åˆ é™¤é¦–å…ƒç´ ç‰¹æ®Šå¤„ç†
         if (index == 1) {
             Node *temp = head;
             head = head->next;
@@ -280,69 +280,69 @@ public:
         }
         else {
             auto pre = head;
-            // ºóÒÆÊÊµ±Î»ÖÃ£¬ÕÒµ½ÒªÉ¾³ıÔªËØµÄÇ°Çı
+            // åç§»é€‚å½“ä½ç½®ï¼Œæ‰¾åˆ°è¦åˆ é™¤å…ƒç´ çš„å‰é©±
             for (int i = 0; i < index - 2; ++i) {
                 pre = pre->next;
             }
-            // É¾³ıÔªËØ
+            // åˆ é™¤å…ƒç´ 
             auto to_del = pre->next;
             pre->next = to_del->next;
             e = to_del->value;
             delete to_del;
         }
-        // ³¤¶È¼õ 1
+        // é•¿åº¦å‡ 1
         --length;
 
         return OK;
     }
 
-    // ±éÀúÔªËØ
+    // éå†å…ƒç´ 
     status ListTraverse(Visit<T> visit) {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
-        // Ö±½Ó±éÀú¼´¿É
+        // ç›´æ¥éå†å³å¯
         auto temp_ptr = head;
         for (int i = 0; i < length; ++i) {
-            // Ê¹ÓÃvisitÖ¸Õë
+            // ä½¿ç”¨visitæŒ‡é’ˆ
             visit(temp_ptr->value);
-            // Ö¸ÕëºóÒÆ
+            // æŒ‡é’ˆåç§»
             temp_ptr = temp_ptr->next;
         }
 
         return OK;
     }
 
-    // ½«Á´±í±£´æµ½ÎÄ¼şÖĞ
+    // å°†é“¾è¡¨ä¿å­˜åˆ°æ–‡ä»¶ä¸­
     status ListSave() {
         if (!initaled) {
             std::cerr << "List is not initialized.\n";
             return ERROR;
         }
         getchar();
-        // µÃµ½ÎÄ¼şÃû
+        // å¾—åˆ°æ–‡ä»¶å
         std::cout << "Please enter the file name: ";
         std::string file_name;
         std::cin >> file_name;
-        // ´ò¿ªÊä³öÎÄ¼şÁ÷
+        // æ‰“å¼€è¾“å‡ºæ–‡ä»¶æµ
         std::fstream fout(file_name, std::ios_base::out);
-        // ÏÈĞ´ÈëÔªËØ¸öÊı
+        // å…ˆå†™å…¥å…ƒç´ ä¸ªæ•°
         fout << length << "\n";
-        // ±éÀúĞ´Èë
+        // éå†å†™å…¥
         auto temp_ptr = head;
         for (int i = 0; i < length; ++i) {
             fout << temp_ptr->value << "\n";
             temp_ptr = temp_ptr->next;
         }
-        // ¹Ø±ÕÎÄ¼şÁ÷±£´æÎÄ¼ş
+        // å…³é—­æ–‡ä»¶æµä¿å­˜æ–‡ä»¶
         fout.close();
         return OK;
     }
 
-    // Îö¹¹º¯Êı
+    // ææ„å‡½æ•°
     ~LinkedList() {
-        // Ö÷Òª¾ÍÊÇÊÍ·Å¿Õ¼äÁË
+        // ä¸»è¦å°±æ˜¯é‡Šæ”¾ç©ºé—´äº†
         auto temp = head;
         while (temp != nullptr) {
             auto next = temp->next;
