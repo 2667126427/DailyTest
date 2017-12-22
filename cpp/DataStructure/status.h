@@ -6,7 +6,6 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
-#include <cstdio>
 
 #define TRUE 1
 #define FALSE 0
@@ -20,6 +19,11 @@ using status = int;
 // clear the screen
 void cls() {
     system("cls");
+}
+
+void wait() {
+    getchar();
+    getchar();
 }
 
 // insert into left or right

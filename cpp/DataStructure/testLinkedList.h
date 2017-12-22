@@ -35,22 +35,34 @@ void testLinkedList() {
 		switch (op) {
 		case 1:
 			std::cout << "InitaList Function\n";
-			if (L.InitaList() == OK) std::cout << "Initialze successful.\n";
-			else std::cout << "Initailze failed.\n";
+            if (L.InitaList() == OK) {
+                std::cout << "Initialze successful.\n";
+            }
+            else {
+                std::cout << "Initailze failed.\n";
+            }
 			getchar();
 			getchar();
 			break;
 		case 2:
             std::cout << "\nDestroyList Function\n";
-			if (L.DestroyList() == OK) std::cout << "Destroy successfully.\n";
-			else std::cout << "Destroy failed.\n";
+            if (L.DestroyList() == OK) {
+                std::cout << "Destroy successfully.\n";
+            }
+            else {
+                std::cout << "Destroy failed.\n";
+            }
 			getchar();
 			getchar();
 			break;
 		case 3:
             std::cout << "\nClearList Function\n";
-			if (L.ClearList() == OK) std::cout << "Clear successfully\n";
-			else std::cout << "CLear failed.\n";
+            if (L.ClearList() == OK) {
+                std::cout << "Clear successfully\n";
+            }
+            else {
+                std::cout << "CLear failed.\n";
+            }
 			getchar();
 			getchar();
 			break;
