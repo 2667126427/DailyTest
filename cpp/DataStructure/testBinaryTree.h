@@ -1,32 +1,37 @@
 #ifndef DATASTRUCTURE_TESTBINARYTREE_H
 #define DATASTRUCTURE_TESTBINARYTREE_H
-
-#include <string>
+// 包含要测试的数据类型头文件
 #include "binaryTree.h"
+// 设置值类型为char型
 using ValueType = char;
-
+// 空字符设置为'#'
 const ValueType NULL_VALUE = '#';
-
+// 测试主函数
 void testBinaryTree() {
+    // 选择的操作
     int operation = -1;
-    constexpr int size = 100;
-    int tree_index = 0;
-    int temp_tree_index = 0;
+    // 一个辅助变量
     ValueType value = 0;
-    Node<ValueType> *temp_node;
-    BinaryTree<ValueType, NULL_VALUE> trees[size];
-    Compare<ValueType> comp = [](const ValueType &a, const ValueType &b)
-        ->bool {return a == b; };
+    // 结点类型指针
+    Node<ValueType> *temp_node = nullptr;
+    // 定义一棵二叉树
+    BinaryTree<ValueType, NULL_VALUE> tree;
+    // visit函数
     Visit<ValueType> visit = [](const ValueType &t) {std::cout << t << std::endl; };
-
+    // 默认键为-1
     int key = -1;
+    // 左右选择
     LR lr = LR::L;
+    // 插入子树时的临时树
     BinaryTree<ValueType, NULL_VALUE> temp_tree;
+    // 用户选择的选项
     std::string choice;
     while (operation != 0) {
+        // 清屏
         cls();
-        std::cout << "\n\n";
-        std::cout << "        Menu for Binary Tree\n";
+        // 打印菜单
+        std::cout << "";
+        std::cout << "               Menu for Binary Tree\n\n";
         std::cout << "---------------------------------------------------\n";
         std::cout << "      1.InitBiTree         2.DestroyBiTree\n";
         std::cout << "      3.CreateBiTree       4.ClearBiTree\n";
@@ -40,11 +45,11 @@ void testBinaryTree() {
         std::cout << "      19.PostOrderTraverse 20.LevelOrderTraverse\n";
         std::cout << "      0.Exit\n";
         std::cout << "---------------------------------------------------\n";
-        std::cout << "    current binary tree: " << tree_index << "\n";
         std::cout << " Please select your selection: ";
         std::cin >> choice;
+        // 将字符串转为数字
         operation = std::stoi(choice);
-        auto &tree = trees[tree_index];
+        // 根据选择进行操作
         switch (operation) {
         case 1:
             if (tree.InitBiTree() == OK) {
@@ -99,7 +104,7 @@ void testBinaryTree() {
         case 7:
             temp_node = tree.Root();
             if (temp_node != nullptr) {
-                std::cout << "Got root from tree, value: "
+                std::cout << "Get root from tree, value: "
                     << temp_node->value << "\n";
             }
             else {
@@ -112,7 +117,7 @@ void testBinaryTree() {
             std::cout << "Please input key of the node: ";
             std::cin >> key;
             value = tree.Value(key);
-            std::cout << "Got value: " << value << "\n";
+            std::cout << "Get value: " << value << "\n";
             wait();
             break;
         case 9:
@@ -149,7 +154,7 @@ void testBinaryTree() {
             std::cin >> key;
             temp_node = tree.LeftChildren(key);
             if (temp_node != nullptr) {
-                std::cout << "Got node's left node, value: "
+                std::cout << "Get node's left node, value: "
                     << temp_node->value << std::endl;
             }
             else {
@@ -163,7 +168,7 @@ void testBinaryTree() {
             std::cin >> key;
             temp_node = tree.RightChildren(key);
             if (temp_node != nullptr) {
-                std::cout << "Got the right children, value: "
+                std::cout << "Get the right children, value: "
                     << temp_node->value << std::endl;
             }
             wait();
@@ -174,7 +179,7 @@ void testBinaryTree() {
             std::cin >> key;
             temp_node = tree.LeftSibling(key);
             if (temp_node != nullptr) {
-                std::cout << "Got the left sibling of node, value: "
+                std::cout << "Get the left sibling of node, value: "
                     << temp_node->value << "\n";
             }
             else {
@@ -188,7 +193,7 @@ void testBinaryTree() {
             std::cin >> key;
             temp_node = tree.RightSibling(key);
             if (temp_node != nullptr) {
-                std::cout << "Got the right sibling of node, value: "
+                std::cout << "Get the right sibling of node, value: "
                     << temp_node->value << "\n";
             }
             else {
