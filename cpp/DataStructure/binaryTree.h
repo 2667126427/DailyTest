@@ -1,258 +1,293 @@
 #ifndef DATASTRUCTURE_BINARY_TREE_H
 #define DATASTRUCTURE_BINARY_TREE_H
-#include <queue>
-#include <vector>
 #include "status.h"
 
-// Binary tree node defination
+// 结点定义
 template<typename ValueType>
 struct Node {
+    // 键域，方便二叉树使用
     int key;
-    // value in node
+    // 值域
     ValueType value;
-    // left children pointer
+    // 左孩子指针
     Node<ValueType> *left = nullptr;
-    // right children pointer
+    // 右孩子指针
     Node<ValueType> *right = nullptr;
-    // parent pointer
+    // 父节点指针
     Node<ValueType> *parent;
-
+    // 禁止默认构造函数，防止父指针未被初始化
     Node() = delete;
-    Node(const int key, ValueType value,
+    // 唯一的构造函数
+    Node(const int key, const ValueType &value,
         Node<ValueType> *&parent)
         :value(value), parent(parent), key(key) {}
 };
 
-// Binary tree
+// 二叉树定义，需要传入存储的值类型和空值的表示
 template<typename ValueType, const ValueType NULL_VALUE>
 class BinaryTree {
 private:
     using NodeType = Node<ValueType>;
-    // head node pointer
+    // 根结点定义
     NodeType *head = nullptr;
-    // mark if the tree has been initalized
+    // 标记树是否被初始化
     bool initalized = false;
+    // key是键，内部为结点唯一分配，相当于ID
     int key = 0;
-    // destroy the tree
+    // 释放二叉树空间
     void freeTree(NodeType *&node) {
         if (node != nullptr) {
+            // 先递归调用释放子树
             freeTree(node->left);
             freeTree(node->right);
+            // 释放当前结点
             delete node;
+            // 置为null
             node = nullptr;
         }
     }
 
-    // get depth of tree
+    // 重载函数，获取树的深度
     int BiTreeDepth(const NodeType *node) {
-        if (node == nullptr) {
-            return 0;
+        // 当前结点不为空才继续
+        if (node != nullptr) {
+            // 获取左右结点最深的，加一返回
+            int left = BiTreeDepth(node->left);
+            int right = BiTreeDepth(node->right);
+            return std::max(left, right) + 1;
         }
-
-        int left = BiTreeDepth(node->left);
-        int right = BiTreeDepth(node->right);
-        return std::max(left, right) + 1;
+        // 递归终止条件
+        // 为空结束返回0
+        return 0;
     }
 
-    // preorder traverse overload
+    // 重载前序遍历
     void PreOrderTraverse(const NodeType *node,
         const Visit<ValueType> &visit) {
+        // 结点为空为递归终止条件
         if (node != nullptr) {
-            // visit node first
+            // 前序遍历先遍历当前结点
             visit(node->value);
-            // left node
+            // 依次左右结点
             PreOrderTraverse(node->left, visit);
-            // right node
             PreOrderTraverse(node->right, visit);
         }
     }
 
-    // inorder traverse overload
+    // 重载中序遍历
     void InOrderTraverse(const NodeType *node,
         const Visit<ValueType> &visit) {
+        // 递归终止同前序遍历
         if (node != nullptr) {
-            // inorder left child
+            // 左中右顺序遍历
             InOrderTraverse(node->left, visit);
-            // visit node value
             visit(node->value);
-            // visit right node value
             InOrderTraverse(node->right, visit);
         }
     }
 
+    // 重载后序遍历，详细内容同上
     void PostOrderTraverse(const NodeType *node,
         const Visit<ValueType> &visit) {
         if (node != nullptr) {
-            // visit left node
+            // 顺序左右中
             PostOrderTraverse(node->left, visit);
-            // visit right node
             PostOrderTraverse(node->right, visit);
-            // visit node value
             visit(node->value);
         }
     }
 
+    // 根据key寻找结点，返回值为找到的结点指针或者nullptr
     NodeType *find_by_key(NodeType *node, const int key) {
+        // 同样递归终止条件为指针参数为空
         if (node != nullptr) {
-
+            // 找到就返回指针
             if (node->key == key) {
                 return node;
             }
-
+            // 向左边寻找
             auto left = find_by_key(node->left, key);
             if (left != nullptr) {
                 return left;
             }
+            // 向右边寻找
             auto right = find_by_key(node->right, key);
             if (right != nullptr) {
                 return right;
             }
         }
-
+        // 默认返回nullptr
         return nullptr;
     }
 
+    // 对建树进行重载的函数
     void CreateBiTree(NodeType *&node, NodeType *parent,
         std::vector<ValueType> values, size_t &index) {
+        // 当前下标参数未超出vector范围并且此处值不为空
         if (index < values.size() && values[index] != NULL_VALUE) {
+            // 将node赋值为新开辟的结点，key进行自增
             node = new NodeType(key++, values[index], parent);
+            // 递归进行左右构建
             CreateBiTree(node->left, node, values, ++index);
             CreateBiTree(node->right, node, values, ++index);
         }
     }
 
+    // 展示现有树的结点，输出key及对应的值
     void display(const NodeType *node) {
         if (node != nullptr) {
             std::cout << "key: " << node->key << ", value: " << node->value << "\n";
+            // 递归对左右进行调用
             display(node->left);
             display(node->right);
         }
     }
 
-    void InsertChildren(NodeType *&node, NodeType *&c_node, const LR &lr) {
-        if (c_node != nullptr) {
+    // 重载插入子树操作
+    void InsertChildren(NodeType *&node, const NodeType *tree_node, const LR &lr) {
+        // 此操作将给出的子树进行整棵复制而不是直接接入，防止外部释放子树后出现问题
+        // 参数为要进行赋值的结点引用
+        if (tree_node != nullptr) {
+            // 获取插入位置是左还是右
             auto &chi_node = lr == LR::L ? node->left : node->right;
-
-            chi_node = new NodeType(key++, c_node->value, node);
-            InsertChildren(chi_node, c_node->left, LR::L);
-            InsertChildren(chi_node, c_node->right, LR::R);
+            // 对获取到的结点赋值
+            chi_node = new NodeType(key++, tree_node->value, node);
+            // 递归复制
+            InsertChildren(chi_node, tree_node->left, LR::L);
+            InsertChildren(chi_node, tree_node->right, LR::R);
         }
     }
 
 public:
+    // 初始化树的函数
     status InitBiTree() {
+        // 首先判断树是否已被初始化
         if (initalized) {
             std::cerr << "The binary tree has been initalized.\n";
             return ERROR;
         }
-        // nothing to do
+        // 将初始化标志设置为true
         initalized = true;
         return OK;
     }
 
+    // 销毁树的函数
     status DestroyBiTree() {
-        // clear the space used and set initalized to false
+        // 常规检测
         if (initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
-
+        // 释放空间
         freeTree(head);
-        head = nullptr;
+        // 更改初始化状态
         initalized = false;
+        // key归0
         key = 0;
 
         return OK;
     }
 
+    // 使用值序列建树的函数
     status CreateBiTree() {
+        // 检测是否被初始化
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
-
+        // 提示输入树的
         std::cout << "Please enter the defination of tree: ";
+        // 管它有木有默认构造函数。。。
         ValueType value;
+        // 设置一个值类型的vector
         std::vector<ValueType> values;
         getchar();
-        while (value = getchar()) {
+        // 尝试得到值序列
+        while (std::cin >> value) {
+            // 没按回车就继续
             if (value != '\n') {
                 values.push_back(value);
+                continue;
             }
-            else {
-                break;
-            }
+            break;
         }
-
-        std::cout << values.size() << "\n";
+        // 输出读入的元素个数
+        std::cout << "Read " << values.size() << " value elements\n";
         size_t index = 0;
+        // 使用序列建树
         CreateBiTree(head, nullptr, values, index);
 
         return OK;
     }
 
+    // 将树清空的函数
     status ClearBiTree() {
-        if (initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+        if (!initalized) {
+            std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
-
+        // 清理空间
         freeTree(head);
+        // key归0
         key = 0;
         return OK;
     }
 
+    // 判断树是否为空的函数
     status BiTreeEmpty() {
         if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return true;
         }
 
-        // just check if the head is nullptr
-        return head == nullptr;
+        // 判断深度是否为0即可
+        return BiTreeDepth() == 0;
     }
 
-    // get the depth of tree
+    // 得到树的深度，或者说高度
     int BiTreeDepth() {
         if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return 0;
         }
-
+        // 直接对根节点使用重载的函数
         return BiTreeDepth(head);
     }
-
-    NodeType *Root() {
+    // 获取根节点
+    NodeType *Root() const {
         if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
 
-        // return head pointer
+        // 可以直接返回根结点
         return head;
     }
 
+    // 获取key对应的结点的值
     ValueType Value(const int key) {
         if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return NULL_VALUE;
         }
-
+        // 先寻找结点指针
         auto node = find_by_key(head, key);
+        // 为空说明不存在
         if (node == nullptr) {
             std::cout << "The tree has no node with key: " << key << "!\n";
             return NULL_VALUE;
         }
-
+        // 返回结点的值
         return node->value;
     }
 
+    // 对结点进行赋值操作
     status Assign(const int key, const ValueType value) {
         if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
-
+        // 先寻找对应结点指针
         auto node = find_by_key(head, key);
 
         if (node == nullptr) {
@@ -260,57 +295,47 @@ public:
             return ERROR;
         }
 
+        // 赋值
         node->value = value;
         return OK;
     }
 
+    // 寻找结点的父结点
     NodeType *Parent(const int key) {
         if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
 
+        // 先寻找一下key对应的结点
         auto node = find_by_key(head, key);
         if (node == nullptr) {
             std::cout << "The tree has no node with key: " << key << "!\n";
             return nullptr;
         }
 
+        // node不为空就存在父节点
         return node->parent;
     }
 
+    // 返回对应结点的左孩子指针
     NodeType *LeftChildren(const int key) {
         if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
+            std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
-
+        // 先找到前结点
         auto node = find_by_key(head, key);
         if (node == nullptr) {
             std::cerr << "The tree has no node with key: " << key << "!\n";
             return nullptr;
         }
-
-        return find_by_key(head, key)->left;
+        // 返回左孩子
+        return node->left;
     }
 
+    // 逻辑同上
     NodeType *RightChildren(const int key) {
-        if (!initalized) {
-            std::cerr << "The binary tree has been initalized.\n";
-            return nullptr;
-        }
-
-        auto node = find_by_key(head, key);
-
-        if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
-            return nullptr;
-        }
-
-        return find_by_key(head, key)->right;
-    }
-
-    NodeType *LeftSibling(const int key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
@@ -323,19 +348,37 @@ public:
             return nullptr;
         }
 
+        return node->right;
+    }
+
+    // 获取左兄弟结点
+    NodeType *LeftSibling(const int key) {
+        if (!initalized) {
+            std::cerr << "The binary tree has not been initalized.\n";
+            return nullptr;
+        }
+        // 先找到当前结点
+        auto node = find_by_key(head, key);
+        // 判断是否为空
+        if (node == nullptr) {
+            std::cout << "The tree has no node with key: " << key << "!\n";
+            return nullptr;
+        }
+        // 判断父结点是否为空
         if (node->parent == nullptr) {
             std::cerr << "Node is head pointer! no sibling.\n";
             return nullptr;
         }
-
+        // 判断此节点是否就是父节点的左孩子
         if (node->parent->left == node) {
             std::cout << "This node has no left sibling.\n";
             return nullptr;
         }
-
+        // 返回左兄弟结点
         return node->parent->left;
     }
 
+    // 基本思路同上
     NodeType *RightSibling(const int key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
@@ -362,29 +405,34 @@ public:
         return node->parent->right;
     }
 
+    // 插入子树函数
     status InsertChildren(const int key, const LR &lr,
-        BinaryTree<ValueType, NULL_VALUE> &tree) {
+        const BinaryTree<ValueType, NULL_VALUE> &tree) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
-
+        // 获取key对应结点指针
         NodeType *node = find_by_key(head, key);
 
         if (node == nullptr) {
             std::cout << "The tree has no node with key: " << key << "!\n";
             return ERROR;
         }
-        
-        if (lr == LR::L && node->left != nullptr || lr == LR::R && node->right != nullptr) {
-            std::cout << "The children tree is not null!\n";
+        // 判断是否满足插入条件：插入左边时node左孩子指针为空
+        if (lr == LR::L && node->left != nullptr ||
+            lr == LR::R && node->right != nullptr) {
+            std::cout << "The child node is not empty!\n";
             return ERROR;
         }
-        InsertChildren(node, tree.head, lr);
+        // 满足条件插入即可
+        //NodeType *root = tree.Root();
+        InsertChildren(node, tree.Root(), lr);
 
         return OK;
     }
 
+    // 删除子树，操作类似于插入
     status DeleteChild(const int key, const LR &lr) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
@@ -392,17 +440,17 @@ public:
         }
 
         auto node = find_by_key(head, key);
-
         if (node == nullptr) {
             std::cout << "The tree has no node with key: " << key << "!\n";
             return ERROR;
         }
+
         freeTree(lr == LR::L ? node->left : node->right);
 
         return OK;
     }
 
-    // preorder tarverse the tree
+    // 前序遍历
     status PreOrderTraverse(const Visit<ValueType> &visit) {
         if (!initalized) {
             std::cerr << "This binary tree has not been initalized.\n";
@@ -413,48 +461,62 @@ public:
         return OK;
     }
 
+    // 中序遍历
     status InOrderTraverse(const Visit<ValueType> &visit) {
         if (!initalized) {
-            std::cerr << "The binary tree has not been initalized.\n";
+            std::cerr << "This binary tree has not been initalized.\n";
             return ERROR;
         }
-
         InOrderTraverse(head, visit);
+
         return OK;
     }
 
+    // 后序遍历
     status PostOrderTraverse(const Visit<ValueType> &visit) {
         if (!initalized) {
-            std::cerr << "The binary tree has not been initalized.\n";
+            std::cerr << "This binary tree has not been initalized.\n";
             return ERROR;
         }
         PostOrderTraverse(head, visit);
+
         return OK;
     }
 
+    // 层序遍历
     status LevelOrderTraverse(const Visit<ValueType> &visit) {
         if (!initalized) {
-            std::cerr << "The binary tree has not been initalized.\n";
+            std::cerr << "This binary tree has not been initalized.\n";
             return ERROR;
         }
-
+        // 需要借助队列
         std::queue<NodeType*> nodes;
+        // 将头节点压入nodes
         nodes.push(head);
         while (!nodes.empty()) {
+            // 得到最后的压入的结点
             const NodeType* node = nodes.front();
+            // 将其弹出队列
             nodes.pop();
+            // 访问值
             visit(node->value);
-            node->left != nullptr ? nodes.push(node->left) : 0;
-            node->right != nullptr ? nodes.push(node->right) : 0;
+            // 压入左右非空结点
+            if (node->left != nullptr) {
+                nodes.push(node->left);
+            }
+            if (node->right != nullptr) {
+                nodes.push(node->right);
+            }
         }
 
         return OK;
     }
 
+    // 重载输入运算符
     friend std::istream &operator>>(std::istream &is,
         BinaryTree<ValueType, NULL_VALUE> &tree) {
         if (!tree.initalized) {
-            tree.initalized = true;
+            tree.InitBiTree();
             tree.CreateBiTree();
         }
         else {
