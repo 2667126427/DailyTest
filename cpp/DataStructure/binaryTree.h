@@ -144,17 +144,17 @@ private:
     }
 
     // 重载插入子树操作
-    void InsertChildren(NodeType *&node, const NodeType *tree_node, const LR &lr) {
+    void InsertChild(NodeType *&node, const NodeType *insert_node, const LR &lr) {
         // 此操作将给出的子树进行整棵复制而不是直接接入，防止外部释放子树后出现问题
         // 参数为要进行赋值的结点引用
-        if (tree_node != nullptr) {
+        if (insert_node != nullptr) {
             // 获取插入位置是左还是右
             auto &chi_node = lr == LR::L ? node->left : node->right;
             // 对获取到的结点赋值
-            chi_node = new NodeType(key++, tree_node->value, node);
+            chi_node = new NodeType(key++, insert_node->value, node);
             // 递归复制
-            InsertChildren(chi_node, tree_node->left, LR::L);
-            InsertChildren(chi_node, tree_node->right, LR::R);
+            InsertChild(chi_node, insert_node->left, LR::L);
+            InsertChild(chi_node, insert_node->right, LR::R);
         }
     }
 
@@ -202,8 +202,9 @@ public:
         // 设置一个值类型的vector
         std::vector<ValueType> values;
         getchar();
+        //getchar();
         // 尝试得到值序列
-        while (std::cin >> value) {
+        while (value = getchar()) {
             // 没按回车就继续
             if (value != '\n') {
                 values.push_back(value);
@@ -265,16 +266,16 @@ public:
     }
 
     // 获取key对应的结点的值
-    ValueType Value(const int key) {
+    ValueType Value(const int _key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return NULL_VALUE;
         }
         // 先寻找结点指针
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
         // 为空说明不存在
         if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
+            std::cout << "The tree has no node with key: " << _key << "!\n";
             return NULL_VALUE;
         }
         // 返回结点的值
@@ -282,16 +283,16 @@ public:
     }
 
     // 对结点进行赋值操作
-    status Assign(const int key, const ValueType value) {
+    status Assign(const int _key, const ValueType &value) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
         // 先寻找对应结点指针
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
 
         if (node == nullptr) {
-            std::cerr << "The tree has no node with key: " << key << "!\n";
+            std::cerr << "The tree has no node with key: " << _key << "!\n";
             return ERROR;
         }
 
@@ -301,16 +302,16 @@ public:
     }
 
     // 寻找结点的父结点
-    NodeType *Parent(const int key) {
+    NodeType *Parent(const int _key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
 
         // 先寻找一下key对应的结点
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
         if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
+            std::cout << "The tree has no node with key: " << _key << "!\n";
             return nullptr;
         }
 
@@ -319,15 +320,15 @@ public:
     }
 
     // 返回对应结点的左孩子指针
-    NodeType *LeftChildren(const int key) {
+    NodeType *LeftChildren(const int _key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
         // 先找到前结点
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
         if (node == nullptr) {
-            std::cerr << "The tree has no node with key: " << key << "!\n";
+            std::cerr << "The tree has no node with key: " << _key << "!\n";
             return nullptr;
         }
         // 返回左孩子
@@ -335,16 +336,16 @@ public:
     }
 
     // 逻辑同上
-    NodeType *RightChildren(const int key) {
+    NodeType *RightChildren(const int _key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
 
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
 
         if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
+            std::cout << "The tree has no node with key: " << _key << "!\n";
             return nullptr;
         }
 
@@ -352,16 +353,16 @@ public:
     }
 
     // 获取左兄弟结点
-    NodeType *LeftSibling(const int key) {
+    NodeType *LeftSibling(const int _key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
         // 先找到当前结点
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
         // 判断是否为空
         if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
+            std::cout << "The tree has no node with key: " << _key << "!\n";
             return nullptr;
         }
         // 判断父结点是否为空
@@ -379,16 +380,16 @@ public:
     }
 
     // 基本思路同上
-    NodeType *RightSibling(const int key) {
+    NodeType *RightSibling(const int _key) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return nullptr;
         }
 
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
 
         if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
+            std::cout << "The tree has no node with key: " << _key << "!\n";
             return nullptr;
         }
 
@@ -406,42 +407,62 @@ public:
     }
 
     // 插入子树函数
-    status InsertChildren(const int key, const LR &lr,
+    status InsertChild(const int _key, const LR &lr,
         const BinaryTree<ValueType, NULL_VALUE> &tree) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
         // 获取key对应结点指针
-        NodeType *node = find_by_key(head, key);
+        NodeType *node = find_by_key(head, _key);
 
         if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
+            std::cerr << "The tree has no node with key: " << _key << "!\n";
             return ERROR;
         }
-        // 判断是否满足插入条件：插入左边时node左孩子指针为空
-        if (lr == LR::L && node->left != nullptr ||
-            lr == LR::R && node->right != nullptr) {
-            std::cout << "The child node is not empty!\n";
+
+        if (tree.head == nullptr) {
+            return OK;
+        }
+
+        if (tree.head->right != nullptr) {
+            std::cerr << "Right node of tree's head node is not empty.\n";
             return ERROR;
         }
-        // 满足条件插入即可
-        //NodeType *root = tree.Root();
-        InsertChildren(node, tree.Root(), lr);
+
+        NodeType *rest_node = nullptr;
+        if (lr == LR::L) {
+            rest_node = node->left;
+            node->left = new NodeType(key++, tree.head->value, node);
+            if (rest_node != nullptr) {
+                rest_node->parent = node->left;
+                node->left->right = rest_node;
+            }
+            InsertChild(node->left, tree.head->left, LR::L);
+        }
+        else {
+            rest_node = node->right;
+            node->right = new NodeType(key++, tree.head->value, node);
+            if (rest_node != nullptr) {
+                rest_node->parent = node->right;
+                node->right->right = rest_node;
+            }
+            InsertChild(node->right, tree.head->right, LR::R);
+        }
 
         return OK;
     }
 
     // 删除子树，操作类似于插入
-    status DeleteChild(const int key, const LR &lr) {
+    status DeleteChild(const int _key, const LR &lr) {
         if (!initalized) {
             std::cerr << "The binary tree has not been initalized.\n";
             return ERROR;
         }
 
-        auto node = find_by_key(head, key);
+        auto node = find_by_key(head, _key);
         if (node == nullptr) {
-            std::cout << "The tree has no node with key: " << key << "!\n";
+            std::cout << "The tree has no node with key: " << _key << "!\n";
             return ERROR;
         }
 

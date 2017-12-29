@@ -8,6 +8,7 @@ using ValueType = char;
 const ValueType NULL_VALUE = '#';
 // 测试主函数
 void testBinaryTree() {
+    constexpr int size = 100;
     // 选择的操作
     int operation = -1;
     // 一个辅助变量
@@ -15,13 +16,16 @@ void testBinaryTree() {
     // 结点类型指针
     Node<ValueType> *temp_node = nullptr;
     // 定义一棵二叉树
-    BinaryTree<ValueType, NULL_VALUE> tree;
+    BinaryTree<ValueType, NULL_VALUE> trees[size];
+    int tree_index = 0;
+    int temp_tree_index = 0;
     // visit函数
     Visit<ValueType> visit = [](const ValueType &t) {std::cout << t << std::endl; };
     // 默认键为-1
     int key = -1;
     // 左右选择
     LR lr = LR::L;
+    int position = 0;
     // 插入子树时的临时树
     BinaryTree<ValueType, NULL_VALUE> temp_tree;
     // 用户选择的选项
@@ -43,15 +47,18 @@ void testBinaryTree() {
         std::cout << "      15.InsertChild       16.DeleteChild\n";
         std::cout << "      17.PreOrderTraverse  18.InOrderTraverse\n";
         std::cout << "      19.PostOrderTraverse 20.LevelOrderTraverse\n";
+        std::cout << "      21.ChangeBiTree\n";
         std::cout << "      0.Exit\n";
         std::cout << "---------------------------------------------------\n";
+        std::cout << "Current using tree: " << tree_index << "\n\n";
         std::cout << " Please select your selection: ";
         std::cin >> choice;
         // 将字符串转为数字
         operation = std::stoi(choice);
-        // 根据选择进行操作
+        auto &tree = trees[tree_index];
         switch (operation) {
         case 1:
+            std::cout << "InitBiTree Function\n";
             if (tree.InitBiTree() == OK) {
                 std::cout << "Initalize tree succefully.\n";
             }
@@ -61,6 +68,7 @@ void testBinaryTree() {
             wait();
             break;
         case 2:
+            std::cout << "DestroyBiTree Function\n";
             if (tree.DestroyBiTree() == OK) {
                 std::cout << "Destroy tree successfully.\n";
             }
@@ -70,6 +78,7 @@ void testBinaryTree() {
             wait();
             break;
         case 3:
+            std::cout << "CreateBiTree Function\n";
             if (tree.CreateBiTree() == OK) {
                 std::cout << "Create tree successfully.\n";
             }
@@ -79,6 +88,7 @@ void testBinaryTree() {
             wait();
             break;
         case 4:
+            std::cout << "ClearBiTree Function\n";
             if (tree.ClearBiTree() == OK) {
                 std::cout << "Clear tree successfully.\n";
             }
@@ -88,6 +98,7 @@ void testBinaryTree() {
             wait();
             break;
         case 5:
+            std::cout << "BiTreeEmpty Funtion\n";
             if (tree.BiTreeEmpty()) {
                 std::cout << "This tree is empty.\n";
             }
@@ -97,11 +108,13 @@ void testBinaryTree() {
             wait();
             break;
         case 6:
-            std::cout << "Tree's depth is: "
-                << tree.BiTreeDepth() << "\n";
+            std::cout << "BiTreeDepth Function\n";
+            key = tree.BiTreeDepth();
+            std::cout << "Tree's depth is: " << key << "\n";
             wait();
             break;
         case 7:
+            std::cout << "Root Function\n";
             temp_node = tree.Root();
             if (temp_node != nullptr) {
                 std::cout << "Get root from tree, value: "
@@ -113,6 +126,7 @@ void testBinaryTree() {
             wait();
             break;
         case 8:
+            std::cout << "Value Functin\n";
             tree.displsy();
             std::cout << "Please input key of the node: ";
             std::cin >> key;
@@ -121,6 +135,7 @@ void testBinaryTree() {
             wait();
             break;
         case 9:
+            std::cout << "Assign Funciton\n";
             tree.displsy();
             std::cout << "Please input the key of node: ";
             std::cin >> key;
@@ -135,6 +150,7 @@ void testBinaryTree() {
             wait();
             break;
         case 10:
+            std::cout << "Parent Function\n";
             tree.displsy();
             std::cout << "Please enter the key of node: ";
             std::cin >> key;
@@ -149,6 +165,7 @@ void testBinaryTree() {
             wait();
             break;
         case 11:
+            std::cout << "LeftChildren Function\n";
             tree.displsy();
             std::cout << "Please enter the key of node: ";
             std::cin >> key;
@@ -163,6 +180,7 @@ void testBinaryTree() {
             wait();
             break;
         case 12:
+            std::cout << "RightChildren Function\n";
             tree.displsy();
             std::cout << "Please enter the key of node: ";
             std::cin >> key;
@@ -174,6 +192,7 @@ void testBinaryTree() {
             wait();
             break;
         case 13:
+            std::cout << "LeftSibling Function\n";
             tree.displsy();
             std::cout << "Please enter the key of node: ";
             std::cin >> key;
@@ -188,6 +207,7 @@ void testBinaryTree() {
             wait();
             break;
         case 14:
+            std::cout << "RightSibling Function\n";
             tree.displsy();
             std::cout << "Please enter the key of node: ";
             std::cin >> key;
@@ -202,29 +222,31 @@ void testBinaryTree() {
             wait();
             break;
         case 15:
+            std::cout << "InsertChild Function\n";
             tree.displsy();
             std::cout << "Please enter key of node: ";
             std::cin >> key;
             std::cout << "Please enter the tree: ";
             std::cin >> temp_tree;
             std::cout << "insert into left or right(0:left, 1:right):";
-            std::cin >> temp_tree_index;
-            lr = temp_tree_index == 0 ? LR::L : LR::R;
-            if (tree.InsertChildren(key, lr, temp_tree) == OK) {
-                std::cout << "Insert childern success.\n";
+            std::cin >> position;
+            lr = position == 0 ? LR::L : LR::R;
+            if (tree.InsertChild(key, lr, temp_tree) == OK) {
+                std::cout << "Insert child success.\n";
             }
             else {
-                std::cout << "Insert children failed.\n";
+                std::cout << "Insert child failed.\n";
             }
             wait();
             break;
         case 16:
+            std::cout << "DeleteChild Functin\n";
             tree.displsy();
             std::cout << "Please enter key of node: ";
             std::cin >> key;
             std::cout << "Delete left or right(0:left, 1:right):";
-            std::cin >> temp_tree_index;
-            lr = temp_tree_index == 0 ? LR::L : LR::R;
+            std::cin >> position;
+            lr = position == 0 ? LR::L : LR::R;
             if (tree.DeleteChild(key, lr) == OK) {
                 std::cout << "Delete child success.\n";
             }
@@ -273,12 +295,24 @@ void testBinaryTree() {
             }
             wait();
             break;
+        case 21:
+            std::cout << "ChangeBiTree Function\n";
+            std::cout << "Please enter index of tree: ";
+            std::cin >> temp_tree_index;
+            if (temp_tree_index < 0 || temp_tree_index >= 100) {
+                std::cout << "Index out of bounds.\n";
+            }
+            else {
+                tree_index = temp_tree_index;
+            }
+            break;
         case 0:
             break;
         default:
             break;
         }
     }
+    std::cout << "Good Bye.\n";
 }
 
 #endif // DATASTRUCTURE_TESTBINARYTREE_H
