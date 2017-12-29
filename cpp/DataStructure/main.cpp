@@ -1,8 +1,7 @@
-// ����ͷ�ļ�
 #include "testBinaryTree.h"
 
 int main() {
-    // ���Ժ���
+    // 测试函数
     testBinaryTree();
 
     return 0;
