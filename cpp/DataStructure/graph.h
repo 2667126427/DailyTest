@@ -7,36 +7,38 @@
 template<typename T>
 class Graph {
 private:
-    template<typename T>
+    template<typename U>
     struct Node {
         // 结点值定义
-        T value;
+        U value;
         // 指向下个边结点的指针
-        Node<T> *next = nullptr;
+        Node<U> *next = nullptr;
         // 构造函数
-        explicit Node<T>(const T &value) : value(value) {}
+        explicit Node<U>(const U &value) : value(value) {}
     };
 
     //using NodeType = Node<T>;
-    template<typename T>
+    template<typename U>
     struct Vertex {
         // 键：标识一个顶点
         int key;
         // 值域
-        T value;
+        U value;
         // 和本结点相连的点的链表
-        Node<T> *next_node = nullptr;
+        Node<U> *next_node = nullptr;
         // 下一个图结点的指针
-        Vertex<T> *next_vertex = nullptr;
+        Vertex<U> *next_vertex = nullptr;
 
         // 构造函数
-        Vertex<T>(const T &value, const int &key) : value(value), key(key) {}
+        Vertex<U>(const U &value, const int &key) 
+            : value(value), key(key) {}
 
-        bool add_node(const T &value) {
+        bool add_node(const U &value) {
             if (next_node == nullptr) {
-                next_node = new Node<T>(value);
+                next_node = new Node<U>(value);
                 return true;
-            } else {
+            }
+            else {
                 auto temp_n = next_node;
                 while (temp_n->next != nullptr) {
                     if (temp_n->next->value == value) {
@@ -44,21 +46,22 @@ private:
                     }
                     temp_n = temp_n->next;
                 }
-                temp_n->next = new Node<T>(value);
+                temp_n->next = new Node<U>(value);
                 return true;
             }
 
             return false;
         }
 
-        bool remove_node(const T &value) {
+        bool remove_node(const U &value) {
             if (next_node != nullptr) {
                 if (next_node->value == value) {
                     auto t = next_node;
                     next_node = next_node->next;
                     delete (t);
                     return true;
-                } else {
+                }
+                else {
                     auto temp_n = next_node;
                     while (temp_n->next != nullptr) {
                         if (temp_n->next->value == value) {
@@ -125,38 +128,46 @@ private:
         delete (vertex);
     }
 
-    status DFSTraverse(const Vertex<T> *vertex, std::map<T, bool> &visited, const Visit<T> &visit) const {
-        if (!visited[vertex->value]) {
-            visit(vertex->value);
-            visited[vertex->value] = true;
-            auto temp_n = vertex->next_node;
-            while (temp_n != nullptr) {
-                DFSTraverse(find_vertex_by_value(temp_n->value), visited, visit);
-                temp_n = temp_n->next;
+    status DFSTraverse(const Vertex<T> *vertex, 
+        std::map<T, bool> &visited, 
+        const Visit<T> &visit) const {
+        visit(vertex->value);
+        auto temp_n = vertex->next_node;
+        while (temp_n != nullptr) {
+            if (!visited[temp_n->value]) {
+                visited[temp_n->value] = true;
+                DFSTraverse(find_vertex_by_value(temp_n->value), 
+                    visited, visit);
             }
+            temp_n = temp_n->next;
         }
+
+        return OK;
     }
 
-    status BFSTraverse(const Vertex<T> *vertex, std::map<T, bool> &visited, const Visit<T> &visit) const {
-        if (!visited[vertex->value]) {
-            visit(vertex->value);
-            visited[vertex->value] = true;
-            auto temp_n = vertex->next_node;
+    status BFSTraverse(const Vertex<T> *vertex,
+        std::map<T, bool> &visited,
+        const Visit<T> &visit) const {
+        std::queue<const Vertex<T>*> vertexes;
+        vertexes.push(vertex);
+        visited[vertex->value] = true;
+
+        while (!vertexes.empty()) {
+            const auto v = vertexes.front();
+            visit(v->value);
+            visited[v->value] = true;
+            auto temp_n = v->next_node;
             while (temp_n != nullptr) {
                 if (!visited[temp_n->value]) {
-                    visit(temp_n->value);
+                    vertexes.push(find_vertex_by_value(temp_n->value));
                     visited[temp_n->value] = true;
                 }
                 temp_n = temp_n->next;
             }
-
-            temp_n = vertex->next_node;
-            while (temp_n != nullptr) {
-                BFSTraverse(find_vertex_by_value(temp_n->value), visited, visit);
-                temp_n = temp_n->next;
-            }
-
+            vertexes.pop();
         }
+
+        return OK;
     }
 
 public:
@@ -166,9 +177,10 @@ public:
 
     // 建立图的函数
     status CreateGraph(const std::vector<T> &nodes,
-                       const std::vector<std::pair<T, T>> &edges) {
+        const std::vector<std::pair<T, T>> &edges) {
         if (initialized) {
-            std::cout << "Your graph had been initialized, please destroy it before create.\n";
+            std::cout << "Your graph had been initialized,\
+                please destroy it before create.\n";
             return ERROR;
         }
 
@@ -179,8 +191,10 @@ public:
         for (size_t i = 0; i < nodes.size(); i++) {
             if (i == 0) {
                 last_node = head = new Vertex<T>(nodes[i], key++);
-            } else {
-                last_node = last_node->next_vertex = new Vertex<T>(nodes[i], key++);
+            }
+            else {
+                last_node = last_node->next_vertex = 
+                    new Vertex<T>(nodes[i], key++);
             }
             map[last_node->key] = last_node->value;
         }
@@ -192,9 +206,12 @@ public:
             while (temp_v != nullptr) {
                 if (temp_v->value == v1) {
                     temp_v->add_node(v2);
-                } else if (temp_v->value == v2) {
+                }
+                else if (temp_v->value == v2) {
                     temp_v->add_node(v1);
                 }
+
+                temp_v = temp_v->next_vertex;
             }
         }
         // 初始化完成
@@ -214,7 +231,8 @@ public:
             key = 0;
             initialized = false;
             return OK;
-        } else {
+        }
+        else {
             return ERROR;
         }
     }
@@ -271,7 +289,8 @@ public:
                 // 向后移动
                 temp_v = temp_v->next_vertex;
             }
-        } else {
+        }
+        else {
             // 没有找到，说明顶点集里没有参数给的
             return ERROR;
         }
@@ -323,6 +342,13 @@ public:
             return ERROR;
         }
 
+        if (head == nullptr) {
+            head = new Vertex<T>(value, key++);
+            map[head->key] = value;
+
+            return OK;
+        }
+
         auto temp_v = head;
         while (temp_v->next_vertex != nullptr) {
             temp_v = temp_v->next_vertex;
@@ -344,22 +370,20 @@ public:
         if (it == map.cend()) {
             return ERROR;
         }
-
+        T value = it->second;
         map.erase(it);
 
-        T value;
         auto temp_v = head;
         // 删除结点有点麻烦，需要删除边和链表中的结点
         // 要删除的结点为首节点
         if (temp_v->key == ver_key) {
             head = head->next_vertex;
-            value = temp_v->value;
             freeVertex(temp_v);
-        } else {
+        }
+        else {
             while (temp_v->next_vertex != nullptr) {
-                if (temp_v->next_vertex->value = value) {
+                if (temp_v->next_vertex->value == value) {
                     auto t = temp_v->next_vertex;
-                    value = t->value;
                     temp_v->next_vertex = t->next_vertex;
                     freeVertex(t);
                 }
@@ -387,7 +411,8 @@ public:
         while (temp_v != nullptr) {
             if (temp_v->value == v1) {
                 temp_v->add_node(v2);
-            } else if (temp_v->value == v2) {
+            }
+            else if (temp_v->value == v2) {
                 temp_v->add_node(v1);
             }
             temp_v = temp_v->next_vertex;
@@ -406,7 +431,8 @@ public:
         while (temp_v != nullptr) {
             if (temp_v->value == v1) {
                 del = temp_v->remove_node(v2);
-            } else if (temp_v->value == v2) {
+            }
+            else if (temp_v->value == v2) {
                 del = temp_v->remove_node(v1);
             }
             temp_v = temp_v->next_vertex;
@@ -422,12 +448,14 @@ public:
         }
         std::map<T, bool> visited;
         auto temp_v = head;
-        while (temp_v != nullptr) {
-            visited[temp_v->value] = false;
-            temp_v = temp_v->next_vertex;
+        if (head != nullptr) {
+            while (temp_v != nullptr) {
+                visited[temp_v->value] = false;
+                temp_v = temp_v->next_vertex;
+            }
+            visited[head->value] = true;
+            DFSTraverse(head, visited, visit);
         }
-
-        DFSTraverse(head, visited, visit);
 
         return OK;
     }
@@ -437,23 +465,63 @@ public:
             std::cerr << "This graph has not been initialized.\n";
             return ERROR;
         }
+
         std::map<T, bool> visited;
         auto temp_v = head;
-        while (temp_v != nullptr) {
-            visited[temp_v->value] = false;
-            temp_v = temp_v->next_vertex;
-        }
+        if (head != nullptr) {
+            while (temp_v != nullptr) {
+                visited[temp_v->value] = false;
+                temp_v = temp_v->next_vertex;
+            }
 
-        BFSTraverse(head, visited, visit);
+            BFSTraverse(head, visited, visit);
+        }
 
         return OK;
     }
 
-    void display() {
+    void display_vertex() {
         auto temp_v = head;
         while (temp_v != nullptr) {
-            std::cout << "key: " << temp_v->key << ", value: " << temp_v->value << "\n";
+            std::cout << "key: " << temp_v->key 
+                << ", value: " << temp_v->value << "\n";
             temp_v = temp_v->next_vertex;
+        }
+    }
+
+    void display_linked_list() {
+        auto temp_v = head;
+        while (temp_v != nullptr) {
+           
+        }
+    }
+
+    bool LoadGraphFromFile(const std::string &file_name) {
+        std::fstream in(file_name, std::ios_base::in);
+        if (in.is_open()) {
+            size_t count = 0;
+            T v1, v2;
+            initialized = true;
+            DestroyGraph();
+            initialized = true;
+            in >> count;
+            for (size_t i = 0; i < count; i++) {
+                in >> v1;
+                InsertVertex(v1);
+            }
+
+            in >> count;
+            for (size_t i = 0; i < count; i++) {
+                in >> v1 >> v2;
+                InsertArc(std::make_pair(v1, v2));
+            }
+
+            in.close();
+            std::cout << "Load successfully.\n";
+            return true;
+        }
+        else {
+            return false;
         }
     }
 };
