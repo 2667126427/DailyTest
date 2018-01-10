@@ -28,6 +28,8 @@ void testGraph() {
     int operation = -1;
     // 访问函数
     Visit<ValueType> visit = [](const auto &value) { std::cout << value << "\n"; };
+    // 文件名
+    std::string file_name;
     // 主循环
     while (operation != 0) {
         cls();
@@ -36,11 +38,12 @@ void testGraph() {
         std::cout << "     1.CreateGraph          2.DestroyGraph\n";
         std::cout << "     3.LocateVertex         4.GetVertex\n";
         std::cout << "     5.PutVertex            6.FirstAdjacentVertex\n";
-        std::cout << "     7. NextAdjacentVertex  8.InsertVertex\n";
+        std::cout << "     7.NextAdjacentVertex   8.InsertVertex\n";
         std::cout << "     9.DeleteVertex         10.InsertArc\n";
         std::cout << "     11.DeleteArc           12.DFSTraverse\n";
-        std::cout << "     13.BFSTraverse\n";
-        std::cout << "     0.\n";
+        std::cout << "     13.BFSTraverse         14.LoadGraphFromFile\n";
+        std::cout << "     15.DisplayLinkedList\n";
+        std::cout << "     0.Exit\n";
         std::cout << "--------------------------------------------------\n\n";
         std::cout << "Please enter your selection: ";
         std::cin >> operation;
@@ -49,6 +52,7 @@ void testGraph() {
             std::cout << "CreateGraph Function\n";
             input_vertexes(vertexes);
             input_edges(edges);
+            std::cout << "End input.\n";
             if (graph.CreateGraph(vertexes, edges) == OK) {
                 std::cout << "Create graph successfully.\n";
             }
@@ -69,12 +73,16 @@ void testGraph() {
             break;
         case 3:
             std::cout << "LocateVertex Function\n";
-            // TODO
+            graph.display_vertex();
+
+            std::cout << "Please input key of node: ";
+            std::cin >> key;
+            std::cout << graph.LocateVertex(key) << "\n";
             wait();
             break;
         case 4:
             std::cout << "GetVertex Function\n";
-            graph.display();
+            graph.display_vertex();
             std::cout << "PLease enter key of vertex: ";
             std::cin >> key;
             if (graph.GetVertex(value, key) == OK) {
@@ -87,7 +95,7 @@ void testGraph() {
             break;
         case 5:
             std::cout << "PutVertex Function\n";
-            graph.display();
+            graph.display_vertex();
             std::cout << "PLease enter key of vertex: ";
             std::cin >> key;
             std::cout << "Pleas enter value to put: ";
@@ -102,7 +110,7 @@ void testGraph() {
             break;
         case 6:
             std::cout << "FirstAdjacentVertex Function\n";
-            graph.display();
+            graph.display_vertex();
             std::cout << "PLease enter key of vertex: ";
             std::cin >> key;
             node = graph.FirstAdjacentVertex(key);
@@ -116,14 +124,15 @@ void testGraph() {
             break;
         case 7:
             std::cout << "NextAjcacentVertex Function\n";
-            graph.display();
+            graph.display_vertex();
             std::cout << "PLease enter key of vertex: ";
             std::cin >> key;
-            std::cout << "Please enter key of: ";
+            std::cout << "Please enter key of node: ";
             std::cin >> node_key;
             node = graph.NextAdjacentVertex(key, node_key);
             if (node != nullptr) {
-                std::cout << "Get next adjacent vertext: " << node->value << "\n";
+                std::cout << "Get next adjacent vertext: "
+                    << node->value << "\n";
             }
             else {
                 std::cout << "Get next adjacent vertex failed.\n";
@@ -144,7 +153,7 @@ void testGraph() {
             break;
         case 9:
             std::cout << "DeleteVertex Function\n";
-            graph.display();
+            graph.display_vertex();
             std::cout << "PLease enter key of vertex: ";
             std::cin >> key;
             if (graph.DeleteVertex(key) == OK) {
@@ -197,6 +206,18 @@ void testGraph() {
             else {
                 std::cout << "BFSTraverse failed.\n";
             }
+            wait();
+            break;
+        case 14:
+            std::cout << "Loadgraph Function\n";
+            std::cout << "Please enter file name: ";
+            std::cin >> file_name;
+            graph.LoadGraphFromFile(file_name);
+            wait();
+            break;
+        case 15:
+            std::cout << "DisplayLinkedList Function\n";
+            graph.display_linked_list();
             wait();
             break;
         case 0:
