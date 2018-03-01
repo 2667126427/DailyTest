@@ -10,10 +10,15 @@ import java.util.regex.Pattern;
 
 public class WallPaper {
     public static void main(String[] args) throws IOException {
+        for (int i = 0; i < args.length; i++) {
+            System.out.println(args[i]);
+        }
+        int threadCount = args.length > 0 ? Integer.valueOf(args[0]) : 10;
+        int pages = args.length > 1 ? Integer.valueOf(args[1]) : 10;
         String tempUrl = "https://wall.alphacoders.com/by_resolution.php?w=3840&h=2160&page=%d";
         Downloader downloader = new Downloader();
-        ExecutorService service = Executors.newFixedThreadPool(4);
-        for (int i = 0; i <= 8; i++) {
+        ExecutorService service = Executors.newFixedThreadPool(threadCount);
+        for (int i = 0; i <= pages; i++) {
             for (String url : downloader.getUrls(String.format(tempUrl, i))) {
                 service.execute(new Task(url));
             }
@@ -56,8 +61,7 @@ public class WallPaper {
             try {
                 InputStream is = url.openStream();
                 String path = url.getPath();
-                String folder = "D:\\Pictures\\download\\";
-                String fileName =folder +  path.replaceAll("[/.:a-z]+", "") + ".jpg";
+                String fileName = path.replaceAll("[/.:a-z]+", "") + ".jpg";
                 File file = new File(fileName);
                 if (!file.exists()) {
                     int length;
