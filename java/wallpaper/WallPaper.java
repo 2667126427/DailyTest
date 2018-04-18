@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -9,6 +10,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WallPaper {
+    // 1s = 1000ms
+    private final static int SECONDS = 1000;
+
     public static void main(String[] args) throws IOException {
         for (int i = 0; i < args.length; i++) {
             System.out.println(args[i]);
@@ -29,9 +33,11 @@ public class WallPaper {
 
     static class Downloader {
         List<String> getUrls(String uri) throws IOException {
-            URL url = null;
+            URL url;
             url = new URL(uri);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            URLConnection conn = url.openConnection();
+            conn.setConnectTimeout(30 * SECONDS);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             List<String> urls = new ArrayList<>();
             String line;
             Pattern pattern = Pattern.compile("data-href=\"(https://initiate.alphacoders.com/download/wallpaper[/a-z0-9]+)\"");
@@ -59,7 +65,9 @@ public class WallPaper {
         @Override
         public void run() {
             try {
-                InputStream is = url.openStream();
+                URLConnection conn = url.openConnection();
+                conn.setConnectTimeout(30 * SECONDS);
+                InputStream is = conn.getInputStream();
                 String path = url.getPath();
                 String fileName = path.replaceAll("[/.:a-z]+", "") + ".jpg";
                 File file = new File(fileName);
